@@ -8,19 +8,19 @@
 \
 1. read Lecture 18 notes\
 \
-2. write out skeletons for Board class, Player abstract, MachinePlayer class, HumanPlayer class, and Move class. This should include the prototype of each interface method (interface only) and a brief description of the method's behaviors. Necessary interfacing methods are Move chooseMove(), boolean opponentMove(Move m), boolean forceMove(Move m).\
+2. write out skeletons for Board class and HumanPlayer class. This should include the prototype of each interface method (interface only) and a brief description of the method's behaviors.\
 \
 3. complete the GRADER file in the pj2 directory and bring it to lab next week. It will be submitted again when we finish to tell the grader who did which modules.\
 \
 4. Implement the Board class.\
 	1. Implement a private data type for storing the board\
-	2. Implement methods void doMove(Move m) and decide whether a move will change the existing board (fast) or create a new one (easy).\
+	2. Implement method void doMove(Move m) and decide whether a move will change the existing board (fast) or create a new one (easy).\
 	3. Implement boolean validMove(Move m)\
  	4. Implement a toString() override so we can print boards for debugging and playing.\
 	5. Implement int winner() that returns -1 if there is no winning network, 0 if black has won, or 1 if white has won.\
 \
 5. Implement MachinePlayer\
 	1. Implement constructors for MachinePlayer extends Player in a package called player. One takes a parameter (int color) and one takes (int color, int searchDepth). Note: colors are ints 0 (black) 1 (white).\
-	2. Read lecture 17 notes, then write the chooseMove(Board b) function (very difficult) using game trees with alpha-beta pruning. It should depend on the searchDepth if one is chosen in the parameter, or should use a variable depth (deeper for the faster place moves) if no parameter was given.\
+	2. Read lecture 17 notes, then write the chooseMove(Board b) function (very difficult) using game trees with alpha-beta pruning. It should depend on the searchDepth if one is chosen in the parameter, or should use a variable depth (deeper for the faster place moves) if no parameter was given. For alpha-beta pruning, my TA recommended checking out the berkeley edx course for CS188. In week 3 or 4 there is a pertinent lecture that will be helpful.\
 \
 6. Write a separate Test class that tests all of our code in its main method. This should be in addition to the tests we put in the main methods of each class. }

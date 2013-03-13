@@ -1,12 +1,12 @@
                                      GRADER
 
-Name of student running submit:
-Login of student running submit:
+Name of student running submit: Brian Pugh
+Login of student running submit: cs61b-of
 
-Second team member's name:
+Second team member's name: Allen Li
 Second team member's login:
 
-Third team member's name (if any):
+Third team member's name (if any): Stephen Qu
 Third team member's login:
 
 IMPORTANT:  Once you've submitted Project 2 once, the same team member should
@@ -61,3 +61,68 @@ You will probably need to change some of your design decisions as you go; be
 sure to modify this file to reflect these changes before you submit your
 project.  Your design of classes and interfaces with be worth about 10% of your
 grade.
+
+Classes:
+Board
+Player
+  MachinePlayer
+  HumanPlayer
+Move
+Position
+
+Modules:
+  -BOARD CLASS
+  1. Valid Moves Module
+     public boolean validMove(Move m) (Brian)
+     Decides if the Move m is a valid move on this board. It will have to check if the 'from' position is valid, then if the 'to' position can be moved to, specifically whether it will not replace an opponent's piece or create a group of 3 adjacent pieces or add a third piece to a goal or place a piece in the opponent's goal. This can use a call to testInvariants() to see if the move will break any invariants.
+
+     public Move[] validMoves(Move m)
+     Generates a list of all valid moves without calling validMove. We may decide to have MachinePlayer keep an array of references to all pieces it has placed, that it will return all "places" to empty spots and all "steps" from placed pieces.
+
+  2. Winning Network Module (Allen)
+     public Position[] winnerNetwork()
+     Returns an Array of references to the Positions in the winning network.
+     A big recursive function that starts with each piece in one of the goals and goes from piece to piece using a helper function to follow the network.
+
+     public int winner()
+     Returns the color of the winner or -1 if there is not winner yet.
+
+
+  3. General Board Class Module (Allen)
+     public void doMove(Move m)
+     Executes the move M if it is valid. This will change the board, not create a new one.
+
+     public int getNextPlayer()
+     Returns the color of the player who will go next.
+
+     public int getNumMoves();
+     Returns the number of moves elapsed, for use in the chooseMove() method of MachinePlayer.
+
+     private boolean testInvariants() throws AssertionError
+     Asserts that the invariants are true, throwing an AssertionError if they are not.
+     
+  4. toString Module (Stephen)
+     public String toString();
+     Not hard.
+
+  5. Connected Pieces Module (Stephen)
+     public Position[] connectedPieces(Position p)
+     Takes a position and returns an array of all pieces that are the closest to it in each of the 8 directions. First it will get an array of all of the closest pieces, then it will filter out those of the wrong color.
+
+  -POSITION CLASS
+  1. Implement Position Module (Allen)
+     Write a constructor and getters and setters for X, Y, and the color. Moves will be processed by changing Position fields, not references. (Unless we find some security problems with this way)
+
+  -MACHINEPLAYER CLASS
+  1. Choose Move Module (Stephen)
+     public Move chooseMove()
+     This is a minimax game tree method with alpha-beta pruning that decides what move to take. It will contain an internal recursive helper method.
+  
+  2. Board Evaluation Module (Brian)
+     public double boardEval(Board b)
+     Assigns a board a value from -1 to 1 where -1 means black has won and 1 means white has won and everything in between is an ongoing game where an advantage determines the closeness to -1 or to 1.
+
+  3. Moving Module (Brian)
+     Implement opponentMove() and forceMove()
+     Each will use the doMove() method in the Board class, which updates Position fields.
+

@@ -7,12 +7,12 @@ package player;
 
 public class Board {
 
-	private Position[][] b;
+	private Piece[][] b;
 	private int nextPlayer;
 	private int numMoves;
-	public static final int BLACK = Position.BLACK;
-	public static final int WHITE = Position.WHITE;
-	public static final int EMPTY = Position.EMPTY;
+	public static final int BLACK = Piece.BLACK;
+	public static final int WHITE = Piece.WHITE;
+	public static final int EMPTY = Piece.EMPTY;
 	
 	/**
 	 * Constructs a new board of width 8 and length 8. 
@@ -25,12 +25,12 @@ public class Board {
 	 * @param length
 	 */
 	private Board(int length) {
-		nextPlayer = Position.WHITE;
+		nextPlayer = Piece.WHITE;
 		numMoves = 0;
-		this.b = new Position[length][length];
+		this.b = new Piece[length][length];
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
-				b[i][j] = new Position(i, j, Position.EMPTY); // initialize all spaces to EMPTY
+				b[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
 			}
 		}
 	}

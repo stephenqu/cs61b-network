@@ -6,7 +6,7 @@ package player;
  * @author Allen W. Li
  * 
  */
-class Position {
+class Piece {
 
 	private int x;
 	private int y;
@@ -18,7 +18,7 @@ class Position {
 	public static final int EMPTY = -1;
 
 	/**
-	 * Creates a new Position (for use with player.board).
+	 * Creates a new Piece (for use with player.board).
 	 * 
 	 * @param x
 	 *            the x-coordinate of the position (left to right, from 0)
@@ -27,7 +27,7 @@ class Position {
 	 * @param color
 	 *            the color of the piece at that position
 	 */
-	public Position(int x, int y, int color) {
+	public Piece(int x, int y, int color) {
 		this.x = x;
 		this.y = y;
 		this.color = color;

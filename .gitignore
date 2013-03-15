@@ -35,6 +35,7 @@ local.properties
   # Windows image file caches
 Thumbs.db
 ehthumbs.db
+.DS_Store
 
 # Folder config file
 Desktop.ini

@@ -1,37 +1,43 @@
 /* Board.java  */
 package player;
 
-import player.Move;
-
 /**
  * A public class for storing a Board.
  */
 
 public class Board {
 
-	private int[][] b;
+	private Piece[][] b;
 	private int nextPlayer;
-	public static int BLACK = 0;
-	public static int WHITE = 1;
-	public static int EMPTY = -1;
-
+	private int numMoves;
+	public static final int BLACK = Piece.BLACK;
+	public static final int WHITE = Piece.WHITE;
+	public static final int EMPTY = Piece.EMPTY;
+	
+	/**
+	 * Constructs a new board of width 8 and length 8. 
+	 */
 	public Board() {
 		this(8);
 	}
-
-	public Board(int length) {
-		nextPlayer = WHITE;
-		this.b = new int[length][length];
+	/**
+	 * This constructor is private because we don't want to call anything of not length 8. 
+	 * @param length
+	 */
+	private Board(int length) {
+		nextPlayer = Piece.WHITE;
+		numMoves = 0;
+		this.b = new Piece[length][length];
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
-				b[i][j] = EMPTY; // initialize all spaces to EMPTY
+				b[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
 			}
 		}
 	}
 
 	/**
 	 * Decides if the Move m is a valid move on this board
-	 * 
+	 * TODO
 	 * @param m
 	 * @return Whether the move is valid
 	 */
@@ -41,7 +47,7 @@ public class Board {
 
 	/**
 	 * Returns true if a player has won, false if not.
-	 * 
+	 * TODO
 	 * @return Whether the player has won
 	 */
 	public boolean winner() {
@@ -50,17 +56,43 @@ public class Board {
 
 	/**
 	 * Executes the Move m in the parameter if it is valid.
-	 * 
+	 * TODO
 	 * @param m
 	 */
 	public void doMove(Move m) {
 	}
-
+	
+	/**
+	 * Returns the player's color who will perform the next move.
+	 * @return the player's color
+	 */
 	public int getNextPlayer() {
 		return nextPlayer;
 	}
+	
+	/**
+	 * Returns the number of moves that have occurred so far in the game. 
+	 * @return the number of moves
+	 */
+	public int getNumMoves() {
+		return numMoves;
+	}
 
+	/**
+	 * Returns a String representation of a board. 
+	 * TODO
+	 */
 	public String toString() {
 		return super.toString();
+	}
+	
+	/**
+	 * Asserts that our invariants are true. Throws exceptions otherwise. 
+	 * @return always returns true
+	 */
+	@SuppressWarnings("unused")
+	private boolean testInvariants() throws AssertionError {
+		assert true;
+		return true;
 	}
 }

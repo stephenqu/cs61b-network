@@ -14,27 +14,36 @@ public class RandomPlayer extends Player {
   private Board theBoard;
 
 
-  // Creates a random player with the given color.  Color is either 0 (black)
-  // or 1 (white).  (White has the first move.)
+  /**
+   *  Creates a random player with the given color.  Color is either Board.BLACK or 
+   *  Board.WHITE.
+   * @param color Either Board.BLACK or Board.WHITE
+   */
   public RandomPlayer(int color) {
     this.color = color;
-    this.opponentColor = (color + 1) % 2;
+    if (color == Board.BLACK) {
+    	this.opponentColor = Board.WHITE;
+    }
     this.theBoard = new Board();
   }
 
 
-  // Returns a new move by "this" player.  Internally records the move (updates
+  /** Returns a new move by "this" player.  Internally records the move (updates
   // the internal game board) as a move by "this" player.
-  public Move chooseMove() {
+   * 
+   */
+public Move chooseMove() {
     Move[] possible = theBoard.validMoves(); //generate a list of all valid moves
     Random rando = new Random();
     return possible[((int) (rando.nextDouble() * possible.length))]; //return a random element of the possible moves
   }
 
-  // If the Move m is legal, records the move as a move by the opponent
+  /** If the Move m is legal, records the move as a move by the opponent
   // (updates the internal game board) and returns true.  If the move is
   // illegal, returns false without modifying the internal state of "this"
-  // player.  This method allows your opponents to inform you of their moves.
+  // player.  This method allows your opponents to inform you of their moves.'
+   * 
+   */
   public boolean opponentMove(Move m) {
     if (theBoard.validMove(m)) {
       theBoard.doMove(m, opponentColor);
@@ -45,11 +54,13 @@ public class RandomPlayer extends Player {
     }
   }
 
-  // If the Move m is legal, records the move as a move by "this" player
+  /** If the Move m is legal, records the move as a move by "this" player
   // (updates the internal game board) and returns true.  If the move is
   // illegal, returns false without modifying the internal state of "this"
   // player.  This method is used to help set up "Network problems" for your
   // player to solve.
+   * 
+   */
   public boolean forceMove(Move m) {
     if (theBoard.validMove(m)) {
       theBoard.doMove(m, color);

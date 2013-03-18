@@ -1,6 +1,8 @@
 /* Board.java  */
 package player;
 
+import java.util.ArrayList;
+
 /**
  * A public class for storing a Board.
  */
@@ -45,6 +47,35 @@ public class Board {
 	public int getDimension() {
 		return boardLength;
 	}
+	
+	/**
+	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
+	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
+	 * location is specified. 
+	 * @param p the piece
+	 * @return whether we were successful in adding the piece
+	 */
+	public boolean addPiece(Piece p) {
+		Piece prev = b[p.getX()][p.getY()];
+		if (prev.getColor() != Piece.EMPTY) {
+			return false;
+		}
+		b[p.getX()][p.getY()] = p;
+		return true;
+	}
+	
+	/**
+	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
+	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
+	 * location is specified. 
+	 * @param x the x-coordinate of the Piece
+	 * @param y the y-coordinate of the Piece
+	 * @param color the Color of the piece
+	 * @return
+	 */
+	public boolean addPiece(int x, int y, int color) {
+		return this.addPiece(new Piece(x, y, color));
+	}
 
 	/**
 	 * Decides if the Move m is a valid move on this board
@@ -56,7 +87,7 @@ public class Board {
 		Piece to = this.getPiece(m.x2, m.y2);
 
           //Piece to must be within the bounds of the board
-          if (to.getX() < 0 || to.getX() > this.getDimension() || to.getX() < 0 || to.getX() > this.getDimension() || ((to.getX() == 0 || to.getX() == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
+          if (to.getX() < 0 || to.getX() > this.getDimension() || to.getX() < 0 || to.getX() > this.getDimension() || ((to.getX() == 0 || to.getX() == this.getDimension() - 1) && (to.getY() == 0 || to.getY() == this.getDimension() - 1))) {
             return false;
           }
 
@@ -67,7 +98,7 @@ public class Board {
               return false;
             }
             //Piece from must be within the bounds of the board
-            if (from.getX() < 0 || from.getX() > this.getDimension() || from.getX() < 0 || from.getX() > this.getDimension() || ((from.getX() == 0 || from.getX() == this.getDimension() - 1) && (from.getY == 0 || from.getY == this.getDimension() - 1))) {
+            if (from.getX() < 0 || from.getX() > this.getDimension() || from.getX() < 0 || from.getX() > this.getDimension() || ((from.getX() == 0 || from.getX() == this.getDimension() - 1) && (from.getY() == 0 || from.getY() == this.getDimension() - 1))) {
               return false;
             }
           }
@@ -79,14 +110,14 @@ public class Board {
 
           //Can't create a group of 3
           int inGroup = 0;
-          for (Piece p1: to.getSurroundings()) {
+          for (Piece p1: this.getSurroundings(to)) {
             if (p1.getColor() == nextPlayer) {
               inGroup++;
             }
             if (inGroup > 1) {
               return false;
             }
-            for (Piece p2: p1.getSurroundings()) {
+            for (Piece p2: this.getSurroundings(p1)) {
               if (p1.getColor() == nextPlayer && p2.getColor() == nextPlayer) {
                 return false;
               }
@@ -94,25 +125,51 @@ public class Board {
           }
 
           //Can't place a piece in the opponent's goal
-          if ((this.nextPlayer == WHITE && (to.getY() == 0 || to.getY() == this.getDimension()-1) || (this.nextPlayer == BLACK && (to.getX() == 0 || to.getX() == this.getDimension()-1))) {
+          if ((this.nextPlayer == WHITE && (to.getY() == 0 || to.getY() == this.getDimension()-1) || (this.nextPlayer == BLACK && (to.getX() == 0 || to.getX() == this.getDimension()-1)))) {
             return false;
           }
+          
+          return true;
         }
 
-        /**
-         * Returns a list of all valid moves.
-         * First, makes a list of references to all Pieces of color == EMPTY, then filters out those
-         * that are connected to two other same-colored pieces, then for each of those, adds to a list of
-         * Moves the "place" move to that Piece and any "step" moves to that
-         * piece.
-         * TODO
-         *
-         * @param m, heldPieces
-         * @return array of valid moves.
-         */
-        public Move[] validMoves(Move m, Piece[] heldPieces) {
-        	return null;
-        }
+	/**
+	 * Returns a reference to the piece at the given coordinates.
+	 * 
+	 * @param x
+	 *            The x coordinate of the piece.
+	 * @param y
+	 *            The y coordinate of the piece.
+	 * @return
+	 */
+	public Piece getPiece(int x, int y) {
+		return b[x][y];
+	}
+	
+	/**
+	 * Returns an ArrayList of all the members surrounding Piece p (orthogonally or diagonally) that are not
+	 * Piece.EMPTY. Doesn't check if p is a member of the Board.
+	 * 
+	 * @param p the piece
+	 * @return the surrounding pieces
+	 */
+	public ArrayList<Piece> getSurroundings(Piece p) {
+		return new ArrayList<Piece>(8);
+	}
+
+	/**
+	 * Returns a list of all valid moves. First, makes a list of references to
+	 * all Pieces of color == EMPTY, then filters out those that are connected
+	 * to two other same-colored pieces, then for each of those, adds to a list
+	 * of Moves the "place" move to that Piece and any "step" moves to that
+	 * piece. TODO
+	 * 
+	 * @param m
+	 *            , heldPieces
+	 * @return array of valid moves.
+	 */
+	public Move[] validMoves(Move m, Piece[] heldPieces) {
+		return null;
+	}
 
 	/**
 	 * Returns true if a player has won, false if not.
@@ -152,7 +209,31 @@ public class Board {
 	 * TODO
 	 */
 	public String toString() {
-		return super.toString();
+		String eol = System.getProperty("line.separator");
+		String boardBreak = "|";
+		for (int a = 0; a < 2 * this.getDimension() - 1; a++){
+			boardBreak += "-";
+		}
+		boardBreak += "|";
+		String ans = boardBreak + eol;
+		
+		for (int i = 0; i < this.getDimension(); i++) {
+			ans += "|";
+			for (int j = 0; j < this.getDimension(); j++) {
+				switch (b[j][i].getColor()) {
+				case Piece.BLACK:
+					ans += "B|";
+					break;
+				case Piece.WHITE:
+					ans += "W|";
+					break;
+				default:
+					ans += " |";
+				}
+			}
+			ans += eol + boardBreak + eol;
+		}
+		return ans;
 	}
 
 	/**
@@ -163,5 +244,13 @@ public class Board {
 	private boolean testInvariants() throws AssertionError {
 		assert true;
 		return true;
+	}
+	
+	public static void main(String[] args) {
+		Board testBoard = new Board();
+		testBoard.addPiece(new Piece(0, 0, Piece.WHITE));
+		testBoard.addPiece(new Piece(1, 1, Piece.BLACK));
+		testBoard.addPiece(new Piece(4, 1, Piece.WHITE));
+		System.out.println(testBoard);
 	}
 }

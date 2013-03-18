@@ -10,6 +10,7 @@ public class Board {
 	private Piece[][] b;
 	private int nextPlayer;
 	private int numMoves;
+	private int boardLength;
 	public static final int BLACK = Piece.BLACK;
 	public static final int WHITE = Piece.WHITE;
 	public static final int EMPTY = Piece.EMPTY;
@@ -25,6 +26,7 @@ public class Board {
 	 * @param length
 	 */
 	private Board(int length) {
+		boardLength = length;
 		nextPlayer = Piece.WHITE;
 		numMoves = 0;
 		this.b = new Piece[length][length];
@@ -35,14 +37,14 @@ public class Board {
 		}
 	}
 
-        /**
-         * Returns the row/column length of the board.
-         *
-         * @return this's dimension
-         */
-        public getDimension() {
-          return b.length;
-        }
+	/**
+	 * Returns the row/column length of the board.
+	 * 
+	 * @return this's dimension
+	 */
+	public int getDimension() {
+		return boardLength;
+	}
 
 	/**
 	 * Decides if the Move m is a valid move on this board
@@ -54,7 +56,7 @@ public class Board {
 		Piece to = this.getPiece(m.x2, m.y2);
 
           //Piece to must be within the bounds of the board
-          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
+          if (to.getX() < 0 || to.getX() > this.getDimension() || to.getX() < 0 || to.getX() > this.getDimension() || ((to.getX() == 0 || to.getX() == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
             return false;
           }
 
@@ -65,7 +67,7 @@ public class Board {
               return false;
             }
             //Piece from must be within the bounds of the board
-            if (from.getX < 0 || from.getX > this.getDimension() || from.getY < 0 || from.getX > this.getDimension() || ((from.getX == 0 || from.getX == this.getDimension() - 1) && (from.getY == 0 || from.getY == this.getDimension() - 1))) {
+            if (from.getX() < 0 || from.getX() > this.getDimension() || from.getX() < 0 || from.getX() > this.getDimension() || ((from.getX() == 0 || from.getX() == this.getDimension() - 1) && (from.getY == 0 || from.getY == this.getDimension() - 1))) {
               return false;
             }
           }
@@ -78,21 +80,21 @@ public class Board {
           //Can't create a group of 3
           int inGroup = 0;
           for (Piece p1: to.getSurroundings()) {
-            if (p1.getColor == nextPlayer) {
+            if (p1.getColor() == nextPlayer) {
               inGroup++;
             }
             if (inGroup > 1) {
               return false;
             }
             for (Piece p2: p1.getSurroundings()) {
-              if (p1.getColor == nextPlayer && p2.getColor == nextPlayer) {
+              if (p1.getColor() == nextPlayer && p2.getColor() == nextPlayer) {
                 return false;
               }
             }
           }
 
           //Can't place a piece in the opponent's goal
-          if ((this.nextPlayer == WHITE && (to.getY == 0 || to.getY == this.getDimension()-1) || (this.nextPlayer == BLACK && (to.getX == 0 || to.getX == this.getDimension()-1))) {
+          if ((this.nextPlayer == WHITE && (to.getY() == 0 || to.getY() == this.getDimension()-1) || (this.nextPlayer == BLACK && (to.getX() == 0 || to.getX() == this.getDimension()-1))) {
             return false;
           }
         }
@@ -109,6 +111,7 @@ public class Board {
          * @return array of valid moves.
          */
         public Move[] validMoves(Move m, Piece[] heldPieces) {
+        	return null;
         }
 
 	/**

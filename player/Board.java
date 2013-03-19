@@ -44,6 +44,77 @@ public class Board {
           return b.length;
         }
 
+        /**
+         * Returns the piece at X and Y position.
+         *
+         * @param x, y
+         * @return specified Piece
+         */
+        public Piece getPiece(int x, int y) {
+          if (inBounds(x, y)) {
+            return b[x][y];
+          }
+          else {
+            throw new OutOfBoundsException("Specified x and y coordinate is out of board bounds.");
+          }
+
+        /**
+         * Returns true if the x and y coordinates are in the board.
+         *
+         * @param x, y
+         * @return coordinates are within the board
+         */
+        public boolean inBounds(int x, int y) {
+          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
+            return false;
+          }
+          else {
+            return true;
+          }
+
+        /**
+         * Returns true if a Piece of color == color at coordinates x, y
+         * will create a group of three touching pieces of the same color.
+         *
+         * @param color, x, y
+         * @return true if making b.[x][y] color creates a 'group'
+         */
+        public boolean makesGroup(int color, int x, int y) {
+          int inGroup = 0;
+          Piece p = new Piece(color, x, y);
+          for (Piece p1: p.getSurroundings()) {
+            if (p1.getColor == color) {
+              inGroup++;
+            }
+            if (inGroup > 1) {
+              return false;
+            }
+            for (Piece p2: p1.getSurroundings()) {
+              if (p1.getColor == color && p2.getColor == color) {
+                return false;
+              }
+            }
+          }
+        }
+
+         /**
+         * Returns true if a Piece of color color in the position x, y
+         * will be in its opponent's goal.
+         *
+         * @param color, x, y
+         * @return true if making b.[x][y] color creates a 'group'
+         */
+        public boolean inOpponentGoal(int color, int x, int y) {
+          if ((color == WHITE && (y == 0 || y == this.getDimension()-1) || (color == BLACK && (p.x == 0 || p.x == this.getDimension()-1))) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+
+
+
 	/**
 	 * Decides if the Move m is a valid move on this board
 	 * TODO
@@ -54,7 +125,7 @@ public class Board {
 		Piece to = this.getPiece(m.x2, m.y2);
 
           //Piece to must be within the bounds of the board
-          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
+          if (!(inBounds(to.getX(), to.getY()))) {
             return false;
           }
 
@@ -65,7 +136,7 @@ public class Board {
               return false;
             }
             //Piece from must be within the bounds of the board
-            if (from.getX < 0 || from.getX > this.getDimension() || from.getY < 0 || from.getX > this.getDimension() || ((from.getX == 0 || from.getX == this.getDimension() - 1) && (from.getY == 0 || from.getY == this.getDimension() - 1))) {
+            if ((!inBounds(from.getX(), from.getY()))) {
               return false;
             }
           }
@@ -76,31 +147,19 @@ public class Board {
           }
 
           //Can't create a group of 3
-          int inGroup = 0;
-          for (Piece p1: to.getSurroundings()) {
-            if (p1.getColor == nextPlayer) {
-              inGroup++;
-            }
-            if (inGroup > 1) {
-              return false;
-            }
-            for (Piece p2: p1.getSurroundings()) {
-              if (p1.getColor == nextPlayer && p2.getColor == nextPlayer) {
-                return false;
-              }
-            }
+          if (makesGroup(nextPlayer, to)) {
+            return false;
           }
 
           //Can't place a piece in the opponent's goal
-          if ((this.nextPlayer == WHITE && (to.getY == 0 || to.getY == this.getDimension()-1) || (this.nextPlayer == BLACK && (to.getX == 0 || to.getX == this.getDimension()-1))) {
-            return false;
+          if (inOpponentGoal(to.getColor(), to.getX(), to.getY())) {
+            return false
           }
-        }
 
         /**
          * Returns a list of all valid moves.
-         * First, makes a list of references to all Pieces of color == EMPTY, then filters out those
-         * that are connected to two other same-colored pieces, then for each of those, adds to a list of
+         * First, makes a list of references to all Pieces of color == EMPTY not
+         * connected to two other same-colored pieces, then for each of those, adds to a list of
          * Moves the "place" move to that Piece and any "step" moves to that
          * piece.
          * TODO
@@ -108,7 +167,41 @@ public class Board {
          * @param m, heldPieces
          * @return array of valid moves.
          */
-        public Move[] validMoves(Move m, Piece[] heldPieces) {
+        public DList validMoves(Move m, Piece[] heldPieces) {
+          DList empties = new DList();
+          for (i = 0; i < getDimension(); i++) {
+            for (j = 0; j < getDimension(); j++) {
+              try {
+                if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j)))) {
+                  empties.insertBack(getPiece(i, j);
+                }
+              catch OutOfBoundsException {}
+              }
+            }
+          }
+
+          DList valids = new DList();
+          for (DListNode empty : empties) {
+            Piece emptyPiece = ((Piece) DListNode.item());
+            int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
+            valids.insertBack(new Move(emptyX, emptyY));
+            Piece[] froms = emptyPiece.getNeighbors();
+            for (Piece from : froms) {
+              if (from.getColor() == nextPlayer) {
+                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+              }
+            }
+          }
+          return valids;
+        }
+
+
+
+
+
+
+
+
         }
 
 	/**

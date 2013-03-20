@@ -13,15 +13,15 @@ public class Board {
 	public static final int BLACK = Piece.BLACK;
 	public static final int WHITE = Piece.WHITE;
 	public static final int EMPTY = Piece.EMPTY;
-	
+
 	/**
-	 * Constructs a new board of width 8 and length 8. 
+	 * Constructs a new board of width 8 and length 8.
 	 */
 	public Board() {
 		this(8);
 	}
 	/**
-	 * This constructor is private because we don't want to call anything of not length 8. 
+	 * This constructor is private because we don't want to call anything of not length 8.
 	 * @param length
 	 */
 	private Board(int length) {
@@ -61,7 +61,7 @@ public class Board {
 	 */
 	public void doMove(Move m) {
 	}
-	
+
 	/**
 	 * Returns the player's color who will perform the next move.
 	 * @return the player's color
@@ -69,25 +69,83 @@ public class Board {
 	public int getNextPlayer() {
 		return nextPlayer;
 	}
-	
+
 	/**
-	 * Returns the number of moves that have occurred so far in the game. 
+	 * Returns the number of moves that have occurred so far in the game.
 	 * @return the number of moves
 	 */
 	public int getNumMoves() {
 		return numMoves;
 	}
 
+        /**
+	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
+	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
+	 * location is specified.
+	 * @param p the piece
+	 * @return whether we were successful in adding the piece
+	 */
+	public boolean addPiece(Piece p) {
+		Piece prev = b[p.getX()][p.getY()];
+		if (prev.getColor() != Piece.EMPTY) {
+			return false;
+		}
+		b[p.getX()][p.getY()] = p;
+		return true;
+	}
+
 	/**
-	 * Returns a String representation of a board. 
-	 * TODO
+	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
+	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
+	 * location is specified.
+	 * @param x the x-coordinate of the Piece
+	 * @param y the y-coordinate of the Piece
+	 * @param color the Color of the piece
+	 * @return
+	 */
+	public boolean addPiece(int x, int y, int color) {
+		return this.addPiece(new Piece(x, y, color));
+	}
+
+        private int getDim() {
+          return 8;
+          //dummy method
+        }
+
+	/**
+	 * Returns a String representation of a board.
 	 */
 	public String toString() {
-		return super.toString();
+		String eol = System.getProperty("line.separator");
+		String boardBreak = "|";
+		for (int a = 0; a < 2 * this.getDim() - 1; a++){
+			boardBreak += "-";
+		}
+		boardBreak += "|";
+		String ans = boardBreak + eol;
+
+		for (int i = 0; i < this.getDim(); i++) {
+			ans += "|";
+			for (int j = 0; j < this.getDim(); j++) {
+				switch (b[j][i].getColor()) {
+				case Piece.BLACK:
+					ans += "B|";
+					break;
+				case Piece.WHITE:
+					ans += "W|";
+					break;
+				default:
+					ans += " |";
+				}
+			}
+			ans += eol + boardBreak + eol;
+		}
+		return ans;
 	}
-	
+
+
 	/**
-	 * Asserts that our invariants are true. Throws exceptions otherwise. 
+	 * Asserts that our invariants are true. Throws exceptions otherwise.
 	 * @return always returns true
 	 */
 	@SuppressWarnings("unused")

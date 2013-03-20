@@ -1,0 +1,30 @@
+/****THINGS TO CONSIDER FOR MACHINE PLAYER STRATEGY****/
+
+DEFINITIONS:
+A-Move| a Move that adds a piece to a location
+Break| a piece placed in between two pieces of the opposite color that would otherwise have formed a Connection
+Cluster| 3 or more adjacent pieces of the same color (these are illegal)
+Connection| an orthogonal or diagonal line between two pieces of the same color that can be used in a winning configuration: eg there is a Connection between 22 and 24 in 22-24-26, but no Connection between 22 and 26. There is no connection between 72 and 74 because you cannot have two pieces in a goal area form a part of a winning configuration
+M-Move| a Move that moves a piece from one location to one of its adjacent ones.
+Plank| a Board configuration that will result in a winning game for a player (given that the player moves intelligently) no matter what the other player moves (related: Walking the Plank| to make moves that are essentially irrelevant because the other player can win before you no matter what you move)
+Turn| two Connections that are not collinear that share a common piece: eg 22-23-43
+
+M-Move vs A-Move
+1. No "move" moves allowed until all 10 pieces have been added => strategy might be different early game vs late game because pieces are "fixed" until all 10 pieces have been placed at which point players can start moving pieces.
+*EDIT*
+*INSERT ANY EDITS HERE, AND SEPARATE EDITS BY *EDIT* *
+
+Taking advantage of illegal clustering
+2. A player cannot make any moves that would cause him to form a cluster. This means the small "region of space" around two adjacent pieces of the same color are all illegal, thus early game; a move that relies on a connection between two pieces that can only be broken through a piece in that region can be made safely without worrying about the opponent breaking it off. Also, note that pieces that are two spaces apart cannot be connected; if they are two spaces apart orthogonally, they cannot be connected in 3 locations: in between and to either diagonal; however pieces that are two spaces apart diagonally only has one illegal move: in between.
+
+Randomizing for game variation
+3. An interesting machine player strategy picks a random move when a set of moves are all equally advantageous/disadvantageous. This makes it so that a human player can play interesting games that aren't predictable; also obfuscates the machine player strategy to a certain extent.
+
+Multiple Connections = multiple ways to win
+4. A piece that has multiple Connections to other pieces of its color is very versatile; a good machine player strategy will probably seek to minimize the number of such locations for the human player while trying to maximize its own.
+
+Move count: more = BAD
+5. A configuration that has fewer connections might be preferred over one that has more when it would require the opponent many moves to block it. Similarly, it should consider how many moves the player needs to win and how many moves it requires to prevent a Plank.
+
+Multiple collinear pieces
+6. A good strategy might worry less about multiple collinear pieces because a winning configuration must include Turns. Instead, minimize the number of ways the opponent can form legal Turns.

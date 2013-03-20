@@ -35,6 +35,86 @@ public class Board {
 		}
 	}
 
+        /**
+         * Returns the row/column length of the board.
+         *
+         * @return this's dimension
+         */
+        public getDimension() {
+          return b.length;
+        }
+
+        /**
+         * Returns the piece at X and Y position.
+         *
+         * @param x, y
+         * @return specified Piece
+         */
+        public Piece getPiece(int x, int y) {
+          if (inBounds(x, y)) {
+            return b[x][y];
+          }
+          else {
+            throw new OutOfBoundsException("Specified x and y coordinate is out of board bounds.");
+          }
+
+        /**
+         * Returns true if the x and y coordinates are in the board.
+         *
+         * @param x, y
+         * @return coordinates are within the board
+         */
+        public boolean inBounds(int x, int y) {
+          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
+            return false;
+          }
+          else {
+            return true;
+          }
+
+        /**
+         * Returns true if a Piece of color == color at coordinates x, y
+         * will create a group of three touching pieces of the same color.
+         *
+         * @param color, x, y
+         * @return true if making b.[x][y] color creates a 'group'
+         */
+        public boolean makesGroup(int color, int x, int y) {
+          int inGroup = 0;
+          Piece p = new Piece(color, x, y);
+          for (Piece p1: p.getSurroundings()) {
+            if (p1.getColor == color) {
+              inGroup++;
+            }
+            if (inGroup > 1) {
+              return false;
+            }
+            for (Piece p2: p1.getSurroundings()) {
+              if (p1.getColor == color && p2.getColor == color) {
+                return false;
+              }
+            }
+          }
+        }
+
+         /**
+         * Returns true if a Piece of color color in the position x, y
+         * will be in its opponent's goal.
+         *
+         * @param color, x, y
+         * @return true if making b.[x][y] color creates a 'group'
+         */
+        public boolean inOpponentGoal(int color, int x, int y) {
+          if ((color == WHITE && (y == 0 || y == this.getDimension()-1) || (color == BLACK && (p.x == 0 || p.x == this.getDimension()-1))) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }
+
+
+
 	/**
 	 * Decides if the Move m is a valid move on this board
 	 * TODO
@@ -42,8 +122,87 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	public boolean validMove(Move m) {
-		return false;
-	}
+		Piece to = this.getPiece(m.x2, m.y2);
+
+          //Piece to must be within the bounds of the board
+          if (!(inBounds(to.getX(), to.getY()))) {
+            return false;
+          }
+
+          //On a step, the from must be the player's color
+          if (m.moveKind == Move.STEP) {
+            Piece from = this.getPiece(m.x1, m.y1);
+            if (from.getColor() != nextPlayer) {
+              return false;
+            }
+            //Piece from must be within the bounds of the board
+            if ((!inBounds(from.getX(), from.getY()))) {
+              return false;
+            }
+          }
+
+          //Cannot move to an occupied space
+          if (to.getColor() != EMPTY) {
+            return false;
+          }
+
+          //Can't create a group of 3
+          if (makesGroup(nextPlayer, to)) {
+            return false;
+          }
+
+          //Can't place a piece in the opponent's goal
+          if (inOpponentGoal(to.getColor(), to.getX(), to.getY())) {
+            return false
+          }
+
+        /**
+         * Returns a list of all valid moves.
+         * First, makes a list of references to all Pieces of color == EMPTY not
+         * connected to two other same-colored pieces, then for each of those, adds to a list of
+         * Moves the "place" move to that Piece and any "step" moves to that
+         * piece.
+         * TODO
+         *
+         * @param m, heldPieces
+         * @return array of valid moves.
+         */
+        public DList validMoves(Move m, Piece[] heldPieces) {
+          DList empties = new DList();
+          for (i = 0; i < getDimension(); i++) {
+            for (j = 0; j < getDimension(); j++) {
+              try {
+                if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j)))) {
+                  empties.insertBack(getPiece(i, j);
+                }
+              catch OutOfBoundsException {}
+              }
+            }
+          }
+
+          DList valids = new DList();
+          for (DListNode empty : empties) {
+            Piece emptyPiece = ((Piece) DListNode.item());
+            int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
+            valids.insertBack(new Move(emptyX, emptyY));
+            Piece[] froms = emptyPiece.getNeighbors();
+            for (Piece from : froms) {
+              if (from.getColor() == nextPlayer) {
+                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+              }
+            }
+          }
+          return valids;
+        }
+
+
+
+
+
+
+
+
+        }
 
 	/**
 	 * Returns true if a player has won, false if not.
@@ -95,6 +254,7 @@ public class Board {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
 	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
 	 * location is specified.
@@ -114,6 +274,10 @@ public class Board {
 
 	/**
 	 * Returns a String representation of a board.
+=======
+	 * Returns a String representation of a board.
+	 * TODO
+>>>>>>> brian/validnodes
 	 */
 	public String toString() {
 		String eol = System.getProperty("line.separator");
@@ -143,7 +307,10 @@ public class Board {
 		return ans;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> brian/validnodes
 	/**
 	 * Asserts that our invariants are true. Throws exceptions otherwise.
 	 * @return always returns true

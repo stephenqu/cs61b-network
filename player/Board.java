@@ -38,7 +38,7 @@ public class Board {
         /**
          * Returns the row/column length of the board.
          *
-         * @return this's dimension
+         * @return this board's dimension
          */
         public int getDimension() {
           return pieces.length;
@@ -47,69 +47,84 @@ public class Board {
         /**
          * Returns the piece at X and Y position.
          *
-         * @param x, y
-         * @return specified Piece
+         * @param positions x and y
+         * @return Piece at position x,y
          */
-        public Piece getPiece(int x, int y) throws OutOfBoundsException{
+        public Piece getPiece(int x, int y){
           if (inBounds(x, y)) {
             return pieces[x][y];
           }
           else {
-            throw new OutOfBoundsException("Specified x and y coordinate is out of board bounds.");
+	    return null;
           }
-	  return pieces[x][y]; //Dummy return; for compilation
+	}
 
         /**
          * Returns true if the x and y coordinates are in the board.
          *
-         * @param x, y
-         * @return coordinates are within the board
+         * @param positions x and y
+         * @return true if coordinates are within the board
          */
         public boolean inBounds(int x, int y) {
-	    return (!(to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))));
+	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
 
         /**
          * Returns true if a Piece of color == color at coordinates x, y
          * will create a cluster of three touching pieces of the same color.
          *
          * @param color, x, y
-         * @return true if making b.[x][y] color creates a 'cluster'
+         * @return true if making pieces.[x][y] color creates a 'cluster'
          */
         public boolean makesCluster(int color, int x, int y) {
-	  int inGroup = 0;
           Piece p = new Piece(color, x, y);
-          for (Piece p1: p.getSurroundings()) {
-            if (p1.getColor == color) {
-              inGroup++;
-            }
-            if (inGroup > 1) {
-              return false;
-            }
-            for (Piece p2: p1.getSurroundings()) {
-              if (p1.getColor == color && p2.getColor == color) {
-                return false;
-              }
-            }
-          }
-	  return true;
+    	  return makesCluster(p);
         }
 
-         /**
+        /**
+         * Returns true if this Piece will create a cluster of three 
+         * touching pieces of the same color.
+         *
+         * @param piece
+         * @return true if adding this piece creates a 'cluster'
+         */
+	public boolean makesCluster(Piece p) {
+	    int inCluster = 0;
+	    for (Piece p1: getSurroundings(p)) {
+		if (p1.getColor() == color) {
+		    inCluster++;
+		}
+		if (inCluster > 1) {
+		    return false;
+		}
+		for (Piece p2: getSurroundings(p1)) {
+		    if (p1.getColor() == color && p2.getColor() == color) {
+			return false;
+		    }
+		}
+	    }
+	    return true;
+        }
+
+        /**
          * Returns true if a Piece of color color in the position x, y
          * will be in its opponent's goal.
          *
          * @param color, x, y
-         * @return true if making b.[x][y] color creates a 'group'
+         * @return true if a piece of this color at position x,y is in the opponent's goal
          */
         public boolean inOpponentGoal(int color, int x, int y) {
-          if ((color == WHITE && (y == 0 || y == this.getDimension()-1) || (color == BLACK && (p.x == 0 || p.x == this.getDimension()-1))) {
-            return true;
-          }
-          else {
-            return false;
-          }
+	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
         }
 
+	/** 
+	 * Returns true if this Piece will be in its opponent's goal.
+	 *
+	 * @param piece
+	 * @return true if piece will be in its opponent's goal
+	 */
+	public boolean inOpponentGoal(Piece piece){
+	    return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
+	}
 
 
 	/**

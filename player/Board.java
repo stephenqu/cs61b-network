@@ -7,7 +7,7 @@ package player;
 
 public class Board {
 
-	private Piece[][] b;
+	private Piece[][] pieces;
 	private int nextPlayer;
 	private int numMoves;
 	public static final int BLACK = Piece.BLACK;
@@ -27,10 +27,10 @@ public class Board {
 	private Board(int length) {
 		nextPlayer = Piece.WHITE;
 		numMoves = 0;
-		this.b = new Piece[length][length];
+		this.pieces = new Piece[length][length];
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
-				b[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
+				pieces[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
 			}
 		}
 	}
@@ -40,8 +40,8 @@ public class Board {
          *
          * @return this's dimension
          */
-        public getDimension() {
-          return b.length;
+        public int getDimension() {
+          return pieces.length;
         }
 
         /**
@@ -50,13 +50,14 @@ public class Board {
          * @param x, y
          * @return specified Piece
          */
-        public Piece getPiece(int x, int y) {
+        public Piece getPiece(int x, int y) throws OutOfBoundsException{
           if (inBounds(x, y)) {
-            return b[x][y];
+            return pieces[x][y];
           }
           else {
             throw new OutOfBoundsException("Specified x and y coordinate is out of board bounds.");
           }
+	  return pieces[x][y]; //Dummy return; for compilation
 
         /**
          * Returns true if the x and y coordinates are in the board.
@@ -65,22 +66,17 @@ public class Board {
          * @return coordinates are within the board
          */
         public boolean inBounds(int x, int y) {
-          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
-            return false;
-          }
-          else {
-            return true;
-          }
+	    return (!(to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))));
 
         /**
          * Returns true if a Piece of color == color at coordinates x, y
-         * will create a group of three touching pieces of the same color.
+         * will create a cluster of three touching pieces of the same color.
          *
          * @param color, x, y
-         * @return true if making b.[x][y] color creates a 'group'
+         * @return true if making b.[x][y] color creates a 'cluster'
          */
-        public boolean makesGroup(int color, int x, int y) {
-          int inGroup = 0;
+        public boolean makesCluster(int color, int x, int y) {
+	  int inGroup = 0;
           Piece p = new Piece(color, x, y);
           for (Piece p1: p.getSurroundings()) {
             if (p1.getColor == color) {
@@ -95,6 +91,7 @@ public class Board {
               }
             }
           }
+	  return true;
         }
 
          /**

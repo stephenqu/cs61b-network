@@ -67,7 +67,7 @@ public class Board {
          */
         public boolean inBounds(int x, int y) {
 	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
-
+	}
         /**
          * Returns true if a Piece of color == color at coordinates x, y
          * will create a cluster of three touching pieces of the same color.
@@ -165,8 +165,9 @@ public class Board {
 
           //Can't place a piece in the opponent's goal
           if (inOpponentGoal(to.getColor(), to.getX(), to.getY())) {
-            return false
+	      return false;
           }
+	}
 
         /**
          * Returns a list of all valid moves.
@@ -183,14 +184,12 @@ public class Board {
           DList empties = new DList();
           for (i = 0; i < getDimension(); i++) {
             for (j = 0; j < getDimension(); j++) {
-              try {
-                if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j)))) {
-                  empties.insertBack(getPiece(i, j);
-                }
-              catch OutOfBoundsException {}
-              }
-            }
-          }
+		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j))) && inBounds(i,j)) {
+		    empties.insertBack(getPiece(i, j));
+		  }
+	    }
+	  }
+	
 
           DList valids = new DList();
           for (DListNode empty : empties) {
@@ -214,7 +213,6 @@ public class Board {
 
 
 
-        }
 
 	/**
 	 * Returns true if a player has won, false if not.

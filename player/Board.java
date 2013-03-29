@@ -60,6 +60,36 @@ public class Board {
 	}
 
         /**
+         * Returns an 8 element array of pieces representing the neighbors of
+         * the parameter piece, or null if a neighboring spot is out of bounds.
+         *
+         * @param Piece p
+         * @return Piece[8] of surroundings
+         */
+        public Piece[] getSurroundings(Piece p) {
+          Piece[] surround = new Piece[8];
+          surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
+          surround[1] = getPiece(p.getX(), p.getY() - 1);
+          surround[2] = getPiece(p.getX() + 1, p.getY() - 1);
+          surround[3] = getPiece(p.getX() - 1, p.getY());
+          surround[4] = getPiece(p.getX() + 1, p.getY());
+          surround[5] = getPiece(p.getX() - 1, p.getY() + 1);
+          surround[6] = getPiece(p.getX(), p.getY() + 1);
+          surround[7] = getPiece(p.getX() + 1, p.getY() + 1);
+          return surround;
+        }
+
+        /**
+         * getSurroundings for specific parameters.
+         *
+         * @param int color, int x, int y
+         * @return Piece[8] of surroundings
+         */
+        public Piece[] getSurroundings(int color, int x, int y) {
+          Piece[] p = new Piece(color, x, y);
+          return getSurroundings(p);
+
+        /**
          * Returns true if the x and y coordinates are in the board.
          *
          * @param positions x and y
@@ -179,7 +209,7 @@ public class Board {
               valids.insertBack(new Move(emptyX, emptyY));
             }
             else {
-              Piece[] froms = emptyPiece.getSurroundings();
+              Piece[] froms = getSurroundings(emptyPiece);
               for (Piece from : froms) {
                 if (from.getColor() == nextPlayer) {
                   valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));

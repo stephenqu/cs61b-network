@@ -81,7 +81,7 @@ public class Board {
         }
 
         /**
-         * Returns true if this Piece will create a cluster of three 
+         * Returns true if this Piece will create a cluster of three
          * touching pieces of the same color.
          *
          * @param piece
@@ -90,14 +90,14 @@ public class Board {
 	public boolean makesCluster(Piece p) {
 	    int inCluster = 0;
 	    for (Piece p1: getSurroundings(p)) {
-		if (p1.getColor() == color) {
+		if (p1.getColor() == p.getColor()) {
 		    inCluster++;
 		}
 		if (inCluster > 1) {
 		    return false;
 		}
 		for (Piece p2: getSurroundings(p1)) {
-		    if (p1.getColor() == color && p2.getColor() == color) {
+		    if (p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
 			return false;
 		    }
 		}
@@ -116,7 +116,7 @@ public class Board {
 	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
         }
 
-	/** 
+	/**
 	 * Returns true if this Piece will be in its opponent's goal.
 	 *
 	 * @param piece
@@ -134,37 +134,18 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	public boolean validMove(Move m) {
-		Piece to = this.getPiece(m.x2, m.y2);
-
-          //Piece to must be within the bounds of the board
-          if (!(inBounds(to.getX(), to.getY()))) {
-            return false;
-          }
-
-          //On a step, the from must be the player's color
+	  Piece to = this.getPiece(m.x2, m.y2);
           if (m.moveKind == Move.STEP) {
             Piece from = this.getPiece(m.x1, m.y1);
             if (from.getColor() != nextPlayer) {
               return false;
             }
-            //Piece from must be within the bounds of the board
             if ((!inBounds(from.getX(), from.getY()))) {
               return false;
             }
           }
 
-          //Cannot move to an occupied space
-          if (to.getColor() != EMPTY) {
-            return false;
-          }
-
-          //Can't create a group of 3
-          if (makesGroup(nextPlayer, to)) {
-            return false;
-          }
-
-          //Can't place a piece in the opponent's goal
-          if (inOpponentGoal(to.getColor(), to.getX(), to.getY())) {
+          if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(to.getColor(), to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(to)) {
 	      return false;
           }
 	}
@@ -180,39 +161,34 @@ public class Board {
          * @param m, heldPieces
          * @return array of valid moves.
          */
-        public DList validMoves(Move m, Piece[] heldPieces) {
+        public DList validMoves() {
           DList empties = new DList();
-          for (i = 0; i < getDimension(); i++) {
-            for (j = 0; j < getDimension(); j++) {
-		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j))) && inBounds(i,j)) {
+          for (int i = 0; i < getDimension(); i++) {
+            for (int j = 0; j < getDimension(); j++) {
+		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j))) && inBounds(i,j)) {
 		    empties.insertBack(getPiece(i, j));
 		  }
 	    }
 	  }
-	
 
           DList valids = new DList();
           for (DListNode empty : empties) {
             Piece emptyPiece = ((Piece) DListNode.item());
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            valids.insertBack(new Move(emptyX, emptyY));
-            Piece[] froms = emptyPiece.getNeighbors();
-            for (Piece from : froms) {
-              if (from.getColor() == nextPlayer) {
-                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+            if (numMoves <= 10) {
+              valids.insertBack(new Move(emptyX, emptyY));
+            }
+            else {
+              Piece[] froms = emptyPiece.getSurroundings();
+              for (Piece from : froms) {
+                if (from.getColor() == nextPlayer) {
+                  valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+                }
               }
             }
           }
           return valids;
         }
-
-
-
-
-
-
-
-
 
 	/**
 	 * Returns true if a player has won, false if not.

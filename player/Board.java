@@ -86,8 +86,9 @@ public class Board {
          * @return Piece[8] of surroundings
          */
         public Piece[] getSurroundings(int color, int x, int y) {
-          Piece[] p = new Piece(color, x, y);
+          Piece p = new Piece(color, x, y);
           return getSurroundings(p);
+        }
 
         /**
          * Returns true if the x and y coordinates are in the board.
@@ -252,6 +253,59 @@ public class Board {
 	public int getNumMoves() {
 		return numMoves;
 	}
+
+        /**
+         * Evaluates a board on a scale from -1 to 1: -1 meaning black has a winning
+         * network, 1 meaning white has a winning network. Numbers in between mean
+         * that either team has an advantage. The value is calculated by giving each
+         * side a certain amount of points for the different favorable conditions,
+         * then subtracting black's points from white's and dividing that difference
+         * b the total number of points. This will create an advantage range from -1
+         * to 1.
+         * Advantages are given by...
+         * having series of connections on the board
+         *  a series values 2^(n+m) for n connected Pieces with m in goals
+         *
+         * @return this board's evaluation
+         */
+        public double boardEval() {
+          int whiteScore = 0;
+          int blackScore = 0;
+
+          int winner = this.winner();
+          if (winner == WHITE) {
+            return WHITE;
+          }
+          if (winner == BLACK) {
+            return BLACK;
+          }
+
+          for (int[] series: findSeries()) {
+            int points = 1;
+            for (int i = 1; i <= series[1] + series[2]; i++) {
+              points *= 2;
+            }
+            if (series[0] == WHITE) {
+              whiteScore += points;
+            }
+            else {
+              blackScore += points;
+            }
+          }
+
+          return (whiteScore - blackScore) / (whiteScore + blackScore);
+
+        }
+
+        /**
+         * Returns information about the series currently on the board.
+         * [[color, length, pieces in goals], ["], ["]]
+         *
+         * @return series information of this board
+         */
+        public int[][] findSeries() {
+          return new int[1][1];
+        }
 
 	/**
 	 * Returns a String representation of a board.

@@ -1,7 +1,8 @@
 /* RandomPlayer.java */
 
 package player;
-import java.util.Random;
+import java.Math;
+import list.*;
 
 /**
  *  An implementation of an automatic Network player that makes random moves.  Keeps track of moves
@@ -15,7 +16,7 @@ public class RandomPlayer extends Player {
 
 
   /**
-   *  Creates a random player with the given color.  Color is either Board.BLACK or 
+   *  Creates a random player with the given color.  Color is either Board.BLACK or
    *  Board.WHITE.
    * @param color Either Board.BLACK or Board.WHITE
    */
@@ -28,21 +29,24 @@ public class RandomPlayer extends Player {
   }
 
 
-  /** Returns a new move by "this" player.  Internally records the move (updates
-  // the internal game board) as a move by "this" player.
-   * 
+  /**
+   * Returns a new move by "this" player.  Internally records the move (updates
+   * the internal game board) as a move by "this" player.
+   *
+   * @return a random move chosen from the currently valid moves
    */
-public Move chooseMove() {
-    Move[] possible = theBoard.validMoves(); //generate a list of all valid moves
-    Random rando = new Random();
-    return possible[((int) (rando.nextDouble() * possible.length))]; //return a random element of the possible moves
+  public Move chooseMove() {
+    List possible = theBoard.validMoves();
+    return possible.nth(((int) (Math.random() * possible.length())));
   }
 
   /** If the Move m is legal, records the move as a move by the opponent
-  // (updates the internal game board) and returns true.  If the move is
-  // illegal, returns false without modifying the internal state of "this"
-  // player.  This method allows your opponents to inform you of their moves.'
-   * 
+   * (updates the internal game board) and returns true.  If the move is
+   * illegal, returns false without modifying the internal state of "this"
+   * player.  This method allows your opponents to inform you of their moves.'
+   *
+   * @param Move m
+   * @return true if successful
    */
   public boolean opponentMove(Move m) {
     if (theBoard.validMove(m)) {
@@ -55,11 +59,13 @@ public Move chooseMove() {
   }
 
   /** If the Move m is legal, records the move as a move by "this" player
-  // (updates the internal game board) and returns true.  If the move is
-  // illegal, returns false without modifying the internal state of "this"
-  // player.  This method is used to help set up "Network problems" for your
-  // player to solve.
-   * 
+   * (updates the internal game board) and returns true.  If the move is
+   * illegal, returns false without modifying the internal state of "this"
+   * player.  This method is used to help set up "Network problems" for your
+   * player to solve.
+   *
+   * @param Move m
+   * @return true if successful
    */
   public boolean forceMove(Move m) {
     if (theBoard.validMove(m)) {

@@ -19,7 +19,7 @@ public abstract class List {
   /**
    *  isEmpty() returns true if this List is empty, false otherwise.
    *
-   *  @return true if this List is empty, false otherwise. 
+   *  @return true if this List is empty, false otherwise.
    *
    *  Performance:  runs in O(1) time.
    **/
@@ -27,8 +27,8 @@ public abstract class List {
     return size == 0;
   }
 
-  /** 
-   *  length() returns the length of this List. 
+  /**
+   *  length() returns the length of this List.
    *
    *  @return the length of this List.
    *
@@ -51,6 +51,13 @@ public abstract class List {
    *  @param item is the item to be inserted.
    **/
   public abstract void insertBack(Object item);
+
+  /**
+   * returns the nth ListNode in this List, 0 indexed.
+   *
+   * @param index is the index of the item
+   */
+  public abstract ListNode nth(int index);
 
   /**
    *  front() returns the node at the front of this List.  If the List is

@@ -97,6 +97,21 @@ public class DList extends List {
   }
 
   /**
+   * returns the nth ListNode in this List, 0 indexed.
+   *
+   * @param index is the index of the item
+   */
+  public ListNode nth(int index) {
+    ListNode point = head.next;
+    while (index > 0 && point.isValidNode()) {
+      point = point.next();
+      index--;
+    }
+    return point;
+  }
+
+
+  /**
    *  front() returns the node at the front of this DList.  If the DList is
    *  empty, return an "invalid" node--a node with the property that any
    *  attempt to use it will cause an exception.  (The sentinel is "invalid".)

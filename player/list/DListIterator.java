@@ -1,18 +1,19 @@
 /* DListIterator.java */
 
 package list;
+import java.util.Iterator;
 
 /**
  *  A DListIterator defines an iterator for DList
  *
  **/
 
-public class DListIterator extends Iterator {
+public class DListIterator implements Iterator {
 
-  private DListNode curr;
+  private ListNode curr;
 
-  public DListIterator(DListNode head) {
-      this.curr = head.next;
+  public DListIterator(ListNode first) {
+    this.curr = first;
   }
 
   public boolean hasNext() {
@@ -24,9 +25,19 @@ public class DListIterator extends Iterator {
     }
   }
 
-  public next() {
-    DListNode temp = curr.next();
-    curr = curr.next();
-    return temp;
+  public DListNode next() {
+    try {
+      ListNode temp = curr.next();
+      curr = curr.next();
+      return ((DListNode) temp);
+    }
+    catch (InvalidNodeException i) {
+      System.out.println("Caught an InvalidNodeException in DListIterator that shouldn't ever happen.");
+      return null;
+    }
+  }
+
+  public void remove() {
+    System.out.println("DListIterator.remove() is not supported");
   }
 }

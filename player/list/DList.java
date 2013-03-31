@@ -1,6 +1,7 @@
 /* DList.java */
 
 package list;
+import java.util.Iterator;
 
 /**
  *  A DList is a mutable doubly-linked list ADT.  Its implementation is
@@ -8,7 +9,7 @@ package list;
  *
  **/
 
-public class DList extends List {
+public class DList extends List implements Iterable<DListNode> {
 
   /**
    *  (inherited)  size is the number of items in the list.
@@ -65,6 +66,15 @@ public class DList extends List {
   }
 
   /**
+   * returns a new DList Iterator for this DList
+   *
+   * @return DList iterator
+   */
+  public Iterator iterator() {
+    return new DListIterator(this.front());
+  }
+
+  /**
    *  insertFront() inserts an item at the front of this DList.
    *
    *  @param item is the item to be inserted.
@@ -102,12 +112,18 @@ public class DList extends List {
    * @param index is the index of the item
    */
   public ListNode nth(int index) {
-    ListNode point = head.next;
-    while (index > 0 && point.isValidNode()) {
-      point = point.next();
-      index--;
+    try {
+      ListNode point = head.next;
+      while (index > 0 && point.isValidNode()) {
+        point = point.next();
+        index--;
+      }
+      return point;
     }
-    return point;
+    catch (InvalidNodeException i) {
+      System.out.println("unexpected InvalidNodeException in DList/nth()");
+      return null;
+    }
   }
 
 

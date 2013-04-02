@@ -1,5 +1,6 @@
 /* Board.java  */
 package player;
+import list.*;
 
 /**
  * A public class for storing a Board.
@@ -179,6 +180,7 @@ public class Board {
           if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(to.getColor(), to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(to)) {
 	      return false;
           }
+          return true;
 	}
 
         /**
@@ -204,7 +206,13 @@ public class Board {
 
           DList valids = new DList();
           for (DListNode empty : empties) {
-            Piece emptyPiece = ((Piece) DListNode.item());
+        	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed. 
+			try {
+				emptyPiece = ((Piece) empty.item());
+			} catch (InvalidNodeException e) {
+				e.printStackTrace();
+				assert false;
+			}
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
             if (numMoves <= 10) {
               valids.insertBack(new Move(emptyX, emptyY));
@@ -222,12 +230,12 @@ public class Board {
         }
 
 	/**
-	 * Returns true if a player has won, false if not.
+	 * Returns the identity of the winner, or EMPTY if there is none. 
 	 * TODO
-	 * @return Whether the player has won
+	 * @return Which player has won
 	 */
-	public boolean winner() {
-		return false;
+	public int winner() {
+		return EMPTY;
 	}
 
 	/**
@@ -351,7 +359,7 @@ public class Board {
 		for (int i = 0; i < this.getDimension(); i++) {
 			ans += "|";
 			for (int j = 0; j < this.getDimension(); j++) {
-				switch (b[j][i].getColor()) {
+				switch (pieces[j][i].getColor()) {
 				case Piece.BLACK:
 					ans += "B|";
 					break;
@@ -375,5 +383,9 @@ public class Board {
 	private boolean testInvariants() {
 		assert true;
 		return true;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("Hello World");
 	}
 }

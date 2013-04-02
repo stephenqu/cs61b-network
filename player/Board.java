@@ -206,7 +206,7 @@ public class Board {
 
           DList valids = new DList();
           for (DListNode empty : empties) {
-        	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed. 
+        	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
 			try {
 				emptyPiece = ((Piece) empty.item());
 			} catch (InvalidNodeException e) {
@@ -230,7 +230,7 @@ public class Board {
         }
 
 	/**
-	 * Returns the identity of the winner, or EMPTY if there is none. 
+	 * Returns the identity of the winner, or EMPTY if there is none.
 	 * TODO
 	 * @return Which player has won
 	 */
@@ -288,32 +288,98 @@ public class Board {
             return BLACK;
           }
 
-          for (int[] series: findSeries()) {
-            int points = 1;
-            for (int i = 1; i <= series[1] + series[2]; i++) {
-              points *= 2;
-            }
-            if (series[0] == WHITE) {
-              whiteScore += points;
-            }
-            else {
-              blackScore += points;
-            }
-          }
+          int[] conn = findAllConnections();
+          whiteScore += conn[0];
+          blackScore += conn[1];
 
           return (whiteScore - blackScore) / (whiteScore + blackScore);
 
         }
 
         /**
-         * Returns information about the series currently on the board.
-         * [[color, length, pieces in goals], ["], ["]]
+         * Returns information about the connections (two pieces connected in
+         * an orthogonal or diagonal direction not blocked by an opponent's
+         * piece) currently on the board.
          *
-         * @return series information of this board
+         * @return [# white conections, # black connections]
          */
-        public int[][] findSeries() {
-          return new int[1][1];
+        public int[] findAllConnections() {
+          DList[] connDict = new DList[java.lang.Math.min(getNumMoves(), 20)]; //dictionary where keys (first entry) are the Piece, and entries are Pieces it's connected to
+          int dictInd = 0;
+          for (int i = 0; i < getDimension(); i++) {
+            for (int j = 0; j < getDimension(); j++) {
+               if (inBounds(i, j) && getPiece(i, j).getColor() != EMPTY) {
+                 connDict[dictInd] = findPieceConnections(getPiece(i, j));
+                 connDict[dictInd].insertFront(getPiece(i,j));
+                 dictInd++;
+               }
+            }
+          }
+          int whiteTotal = 0, blackTotal = 0;
+          for (DList conn:connDict) {
+            try {
+            if (((Piece) conn.front().item()).getColor() == WHITE) {
+              whiteTotal += conn.length()-1;
+            }
+            else {
+              blackTotal += conn.length()-1;
+            }
+            }
+            catch (InvalidNodeException e) {System.out.println("INException in findAllConnections. Shouldn't happen.");}
+          }
+          int[] counts = {whiteTotal, blackTotal};
+          return counts;
         }
+
+        /**
+         * Returns a DList whose DListNodes contain the Pieces connected to
+         * Piece p.
+         *
+         * @param Piece p
+         * @return DList of Pieces
+         */
+        public DList findPieceConnections(Piece p) {
+          int x = p.getX(), y = p.getY();
+          DList connections = new DList();
+          for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+              if (i != 0 || j != 0) {
+                Piece p2 = connInDirection(p, i, j);
+                if (p2 != null) {
+                  connections.insertBack(p2);
+                }
+              }
+            }
+          }
+          return connections;
+        }
+
+        /**
+         * Returns a connected piece in the direction determined by yDelt and
+         * xDelt. For example, if looking for a connected Piece in the up
+         * direction, do yDelt 1, xDelt 0.
+         *
+         * @param p
+         * @param yDelt
+         * @param xDelt
+         * @return connected Piece or null
+         */
+
+        public Piece connInDirection(Piece p, int xDelt, int yDelt) {
+          int x = p.getX() + xDelt, y = p.getY() + yDelt;
+          while (inBounds(x, y)) {
+            if (p.getColor() == getPiece(x, y).getColor()) {
+              return getPiece(x, y);
+            }
+            else if (getPiece(x, y).getColor() != EMPTY) {
+              return null;
+            }
+            x += xDelt;
+            y += yDelt;
+          }
+          return null;
+        }
+
 
         /**
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
@@ -384,7 +450,7 @@ public class Board {
 		assert true;
 		return true;
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println("Hello World");
 	}

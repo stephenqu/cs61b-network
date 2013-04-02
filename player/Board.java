@@ -7,7 +7,7 @@ package player;
 
 public class Board {
 
-	private Piece[][] b;
+	private Piece[][] pieces;
 	private int nextPlayer;
 	private int numMoves;
 	public static final int BLACK = Piece.BLACK;
@@ -27,10 +27,10 @@ public class Board {
 	private Board(int length) {
 		nextPlayer = Piece.WHITE;
 		numMoves = 0;
-		this.b = new Piece[length][length];
+		this.pieces = new Piece[length][length];
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
-				b[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
+				pieces[i][j] = new Piece(i, j, Piece.EMPTY); // initialize all spaces to EMPTY
 			}
 		}
 	}
@@ -38,81 +38,124 @@ public class Board {
         /**
          * Returns the row/column length of the board.
          *
-         * @return this's dimension
+         * @return this board's dimension
          */
-        public getDimension() {
-          return b.length;
+        public int getDimension() {
+          return pieces.length;
         }
 
         /**
          * Returns the piece at X and Y position.
          *
-         * @param x, y
-         * @return specified Piece
+         * @param positions x and y
+         * @return Piece at position x,y
          */
-        public Piece getPiece(int x, int y) {
+        public Piece getPiece(int x, int y){
           if (inBounds(x, y)) {
-            return b[x][y];
+            return pieces[x][y];
           }
           else {
-            throw new OutOfBoundsException("Specified x and y coordinate is out of board bounds.");
+	    return null;
           }
+	}
+
+        /**
+         * Returns an 8 element array of pieces representing the neighbors of
+         * the parameter piece, or null if a neighboring spot is out of bounds.
+         *
+         * @param Piece p
+         * @return Piece[8] of surroundings
+         */
+        public Piece[] getSurroundings(Piece p) {
+          Piece[] surround = new Piece[8];
+          surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
+          surround[1] = getPiece(p.getX(), p.getY() - 1);
+          surround[2] = getPiece(p.getX() + 1, p.getY() - 1);
+          surround[3] = getPiece(p.getX() - 1, p.getY());
+          surround[4] = getPiece(p.getX() + 1, p.getY());
+          surround[5] = getPiece(p.getX() - 1, p.getY() + 1);
+          surround[6] = getPiece(p.getX(), p.getY() + 1);
+          surround[7] = getPiece(p.getX() + 1, p.getY() + 1);
+          return surround;
+        }
+
+        /**
+         * getSurroundings for specific parameters.
+         *
+         * @param int color, int x, int y
+         * @return Piece[8] of surroundings
+         */
+        public Piece[] getSurroundings(int color, int x, int y) {
+          Piece p = new Piece(color, x, y);
+          return getSurroundings(p);
+        }
 
         /**
          * Returns true if the x and y coordinates are in the board.
          *
-         * @param x, y
-         * @return coordinates are within the board
+         * @param positions x and y
+         * @return true if coordinates are within the board
          */
         public boolean inBounds(int x, int y) {
-          if (to.getX < 0 || to.getX > this.getDimension() || to.getY < 0 || to.getX > this.getDimension() || ((to.getX == 0 || to.getX == this.getDimension() - 1) && (to.getY == 0 || to.getY == this.getDimension() - 1))) {
-            return false;
-          }
-          else {
-            return true;
-          }
-
+	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
+	}
         /**
          * Returns true if a Piece of color == color at coordinates x, y
-         * will create a group of three touching pieces of the same color.
+         * will create a cluster of three touching pieces of the same color.
          *
          * @param color, x, y
-         * @return true if making b.[x][y] color creates a 'group'
+         * @return true if making pieces.[x][y] color creates a 'cluster'
          */
-        public boolean makesGroup(int color, int x, int y) {
-          int inGroup = 0;
+        public boolean makesCluster(int color, int x, int y) {
           Piece p = new Piece(color, x, y);
-          for (Piece p1: p.getSurroundings()) {
-            if (p1.getColor == color) {
-              inGroup++;
-            }
-            if (inGroup > 1) {
-              return false;
-            }
-            for (Piece p2: p1.getSurroundings()) {
-              if (p1.getColor == color && p2.getColor == color) {
-                return false;
-              }
-            }
-          }
+    	  return makesCluster(p);
         }
 
-         /**
+        /**
+         * Returns true if this Piece will create a cluster of three
+         * touching pieces of the same color.
+         *
+         * @param piece
+         * @return true if adding this piece creates a 'cluster'
+         */
+	public boolean makesCluster(Piece p) {
+	    int inCluster = 0;
+	    for (Piece p1: getSurroundings(p)) {
+		if (p1.getColor() == p.getColor()) {
+		    inCluster++;
+		}
+		if (inCluster > 1) {
+		    return false;
+		}
+		for (Piece p2: getSurroundings(p1)) {
+		    if (p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
+			return false;
+		    }
+		}
+	    }
+	    return true;
+        }
+
+        /**
          * Returns true if a Piece of color color in the position x, y
          * will be in its opponent's goal.
          *
          * @param color, x, y
-         * @return true if making b.[x][y] color creates a 'group'
+         * @return true if a piece of this color at position x,y is in the opponent's goal
          */
         public boolean inOpponentGoal(int color, int x, int y) {
-          if ((color == WHITE && (y == 0 || y == this.getDimension()-1) || (color == BLACK && (p.x == 0 || p.x == this.getDimension()-1))) {
-            return true;
-          }
-          else {
-            return false;
-          }
+	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
         }
 
+	/**
+	 * Returns true if this Piece will be in its opponent's goal.
+	 *
+	 * @param piece
+	 * @return true if piece will be in its opponent's goal
+	 */
+	public boolean inOpponentGoal(Piece piece){
+	    return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
+	}
 
 
 	/**
@@ -122,39 +165,21 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	public boolean validMove(Move m) {
-		Piece to = this.getPiece(m.x2, m.y2);
-
-          //Piece to must be within the bounds of the board
-          if (!(inBounds(to.getX(), to.getY()))) {
-            return false;
-          }
-
-          //On a step, the from must be the player's color
+	  Piece to = this.getPiece(m.x2, m.y2);
           if (m.moveKind == Move.STEP) {
             Piece from = this.getPiece(m.x1, m.y1);
             if (from.getColor() != nextPlayer) {
               return false;
             }
-            //Piece from must be within the bounds of the board
             if ((!inBounds(from.getX(), from.getY()))) {
               return false;
             }
           }
 
-          //Cannot move to an occupied space
-          if (to.getColor() != EMPTY) {
-            return false;
+          if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(to.getColor(), to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(to)) {
+	      return false;
           }
-
-          //Can't create a group of 3
-          if (makesGroup(nextPlayer, to)) {
-            return false;
-          }
-
-          //Can't place a piece in the opponent's goal
-          if (inOpponentGoal(to.getColor(), to.getX(), to.getY())) {
-            return false
-          }
+	}
 
         /**
          * Returns a list of all valid moves.
@@ -167,41 +192,33 @@ public class Board {
          * @param m, heldPieces
          * @return array of valid moves.
          */
-        public DList validMoves(Move m, Piece[] heldPieces) {
+        public DList validMoves() {
           DList empties = new DList();
-          for (i = 0; i < getDimension(); i++) {
-            for (j = 0; j < getDimension(); j++) {
-              try {
-                if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesGroup(nextPlayer, i, j)))) {
-                  empties.insertBack(getPiece(i, j);
-                }
-              catch OutOfBoundsException {}
-              }
-            }
-          }
+          for (int i = 0; i < getDimension(); i++) {
+            for (int j = 0; j < getDimension(); j++) {
+		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j))) && inBounds(i,j)) {
+		    empties.insertBack(getPiece(i, j));
+		  }
+	    }
+	  }
 
           DList valids = new DList();
           for (DListNode empty : empties) {
             Piece emptyPiece = ((Piece) DListNode.item());
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            valids.insertBack(new Move(emptyX, emptyY));
-            Piece[] froms = emptyPiece.getNeighbors();
-            for (Piece from : froms) {
-              if (from.getColor() == nextPlayer) {
-                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+            if (numMoves <= 10) {
+              valids.insertBack(new Move(emptyX, emptyY));
+            }
+            else {
+              Piece[] froms = getSurroundings(emptyPiece);
+              for (Piece from : froms) {
+                if (from.getColor() == nextPlayer) {
+                  valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+                }
               }
             }
           }
           return valids;
-        }
-
-
-
-
-
-
-
-
         }
 
 	/**
@@ -238,6 +255,59 @@ public class Board {
 	}
 
         /**
+         * Evaluates a board on a scale from -1 to 1: -1 meaning black has a winning
+         * network, 1 meaning white has a winning network. Numbers in between mean
+         * that either team has an advantage. The value is calculated by giving each
+         * side a certain amount of points for the different favorable conditions,
+         * then subtracting black's points from white's and dividing that difference
+         * b the total number of points. This will create an advantage range from -1
+         * to 1.
+         * Advantages are given by...
+         * having series of connections on the board
+         *  a series values 2^(n+m) for n connected Pieces with m in goals
+         *
+         * @return this board's evaluation
+         */
+        public double boardEval() {
+          int whiteScore = 0;
+          int blackScore = 0;
+
+          int winner = this.winner();
+          if (winner == WHITE) {
+            return WHITE;
+          }
+          if (winner == BLACK) {
+            return BLACK;
+          }
+
+          for (int[] series: findSeries()) {
+            int points = 1;
+            for (int i = 1; i <= series[1] + series[2]; i++) {
+              points *= 2;
+            }
+            if (series[0] == WHITE) {
+              whiteScore += points;
+            }
+            else {
+              blackScore += points;
+            }
+          }
+
+          return (whiteScore - blackScore) / (whiteScore + blackScore);
+
+        }
+
+        /**
+         * Returns information about the series currently on the board.
+         * [[color, length, pieces in goals], ["], ["]]
+         *
+         * @return series information of this board
+         */
+        public int[][] findSeries() {
+          return new int[1][1];
+        }
+
+        /**
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
 	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
 	 * location is specified.
@@ -266,7 +336,7 @@ public class Board {
 		return this.addPiece(new Piece(x, y, color));
 	}
 
-	/**
+        /**
 	 * Returns a String representation of a board.
 	 */
 	public String toString() {

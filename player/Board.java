@@ -315,11 +315,11 @@ public class Board {
 	 * @return whether we were successful in adding the piece
 	 */
 	public boolean addPiece(Piece p) {
-		Piece prev = b[p.getX()][p.getY()];
+		Piece prev = pieces[p.getX()][p.getY()];
 		if (prev.getColor() != Piece.EMPTY) {
 			return false;
 		}
-		b[p.getX()][p.getY()] = p;
+		pieces[p.getX()][p.getY()] = p;
 		return true;
 	}
 

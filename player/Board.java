@@ -372,7 +372,7 @@ public class Board {
 	 * @return always returns true
 	 */
 	@SuppressWarnings("unused")
-	private boolean testInvariants() throws AssertionError {
+	private boolean testInvariants() {
 		assert true;
 		return true;
 	}

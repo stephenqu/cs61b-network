@@ -237,6 +237,24 @@ public class Board {
 	public int winner() {
 		return EMPTY;
 	}
+	
+	/*
+	 * findWinningNetwork module begins here
+	 */
+	
+	private Network findWinningNetwork() {
+		return null;
+	}
+	
+	private class Network {
+		public Network() {
+			
+		}
+	}
+	
+	/*
+	 * findWinningNetwork module ends here
+	 */
 
 	/**
 	 * Executes the Move m in the parameter if it is valid.

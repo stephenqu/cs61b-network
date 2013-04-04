@@ -415,14 +415,19 @@ public class Board {
 	 */
 	public String toString() {
 		String eol = System.getProperty("line.separator");
-		String boardBreak = "|";
+		String boardBreak = " |";
+		String top = "  ";
 		for (int a = 0; a < 2 * this.getDimension() - 1; a++){
 			boardBreak += "-";
 		}
+		for (int a = 0; a < this.getDimension(); a++) {
+			top += a % 10 + " ";
+		}
 		boardBreak += "|";
-		String ans = boardBreak + eol;
+		String ans = top + eol + boardBreak + eol;
 
 		for (int i = 0; i < this.getDimension(); i++) {
+			ans += i % 10;
 			ans += "|";
 			for (int j = 0; j < this.getDimension(); j++) {
 				switch (pieces[j][i].getColor()) {

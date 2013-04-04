@@ -1,7 +1,7 @@
 /* RandomPlayer.java */
 
 package player;
-import java.Math;
+import java.lang.Math;
 import list.*;
 
 /**
@@ -37,7 +37,13 @@ public class RandomPlayer extends Player {
    */
   public Move chooseMove() {
     List possible = theBoard.validMoves();
-    return possible.nth(((int) (Math.random() * possible.length())));
+    try {
+    return ((Move) possible.nth(((int) (Math.random() * possible.length()))).item());
+    }
+    catch (InvalidNodeException e) {
+      System.out.println("InvalidNode Exception thrown in RandomPlayer.ChooseMove");
+      return null;
+    }
   }
 
   /** If the Move m is legal, records the move as a move by the opponent
@@ -50,7 +56,7 @@ public class RandomPlayer extends Player {
    */
   public boolean opponentMove(Move m) {
     if (theBoard.validMove(m)) {
-      theBoard.doMove(m, opponentColor);
+      theBoard.doMove(m);
       return true;
     }
     else {
@@ -69,7 +75,7 @@ public class RandomPlayer extends Player {
    */
   public boolean forceMove(Move m) {
     if (theBoard.validMove(m)) {
-      theBoard.doMove(m, color);
+      theBoard.doMove(m);
       return true;
     }
     else {

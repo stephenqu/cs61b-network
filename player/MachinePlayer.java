@@ -89,6 +89,9 @@ public class MachinePlayer extends Player {
       Best bestReply;
       DList moves = board.validMoves();
       double boardScore = board.boardEval();
+      if (this.COLOR == Board.BLACK){
+      boardScore = -1*board.boardEval(); // Flips the scale when Computer is BLACK, because 1 is the case where WHITE wins, and -1 is the case where BLACK wins.
+      }
       if (depth == maxDepth) {
         System.out.println(moves);
       }

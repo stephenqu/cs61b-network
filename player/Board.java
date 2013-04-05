@@ -676,7 +676,7 @@ public class Board {
           if (p.getColor() == EMPTY) {
             System.out.println("Can't remove an empty Piece");
           }
-          pieces[p.getX()][p.getY()] = p;
+          pieces[p.getX()][p.getY()] = new Piece(p.getX(), p.getY(), EMPTY);
         }
 
 	/**

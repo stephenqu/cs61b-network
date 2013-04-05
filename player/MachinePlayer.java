@@ -82,7 +82,7 @@ public class MachinePlayer extends Player {
       DList moves = board.validMoves();
       double boardScore = board.boardEval();
 
-      if ( (depth == 0) || (boardScore == Board.WHITE) || (boardScore == Board.BLACK) || (moves.length()==0) ){
+      if ( (depth == 0) || (boardScore == 1) || (boardScore == -1) || (moves.length()==0) ){
 	  return new Best(boardScore);
       }
       if (moves.length() == 0){

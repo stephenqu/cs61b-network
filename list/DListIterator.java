@@ -27,7 +27,7 @@ public class DListIterator implements Iterator {
 
   public DListNode next() {
     try {
-      ListNode temp = curr.next();
+      ListNode temp = curr;
       curr = curr.next();
       return ((DListNode) temp);
     }

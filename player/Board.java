@@ -319,8 +319,6 @@ public class Board {
     		Piece[] pieces;
     		try {
     			pieces = findNetwork(pieceArray);
-    			int x = 1 + 1;
-    			x = x + 2;
     			if (pieces != null)
     				return new Network(pieces);
     			else

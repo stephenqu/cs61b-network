@@ -498,7 +498,19 @@ public class Board {
     		Piece[] getPieces() {
     			return pieces;
     		}
-    	}
+
+		public String toString() {
+			String colorString = "";
+			if (color == BLACK)
+				colorString = "BLACK";
+			else if (color == WHITE)
+				colorString = "WHITE";
+			else if (color == EMPTY)
+				colorString = "EMPTY";
+			return "Network of length " + pieces.length + " and color "
+					+ colorString + " from " + pieces[0] + " to " + pieces[pieces.length - 1] + System.getProperty("line.separator");
+		}
+	}
 
 	/*
 	 * findWinningNetwork module ends here

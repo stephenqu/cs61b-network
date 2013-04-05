@@ -222,7 +222,7 @@ public class Board {
           DList froms = new DList();
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
-		  if (inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j)))) {
+		  if (inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j)) && !(makesCluster(nextPlayer, i, j))) {
 		    empties.insertBack(getPiece(i, j));
 		  }
                   if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {

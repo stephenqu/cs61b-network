@@ -183,12 +183,12 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	public boolean validMove(Move m) {
-	  Piece to = this.getPiece(m.x2, m.y2);
+	  Piece to = this.getPiece(m.x1, m.y1);
           if ((m.moveKind == Move.STEP && numMoves <= 20) || (m.moveKind == Move.ADD && numMoves > 20)) {
             return false;
           }
           if (m.moveKind == Move.STEP) {
-            Piece from = this.getPiece(m.x1, m.y1);
+            Piece from = this.getPiece(m.x2, m.y2);
             if (from.getColor() != nextPlayer) {
               return false;
             }
@@ -269,7 +269,7 @@ public class Board {
     		if (networks.length() == 0) { //if there aren't any, nobody has won
     			return EMPTY;
     		}
-    		
+
     		//find the color of the first network
     		ListNode cur = networks.front();
     		int winnerColor = EMPTY;
@@ -280,27 +280,27 @@ public class Board {
     		} catch (InvalidNodeException e) {
     			assert false;
     		}
-    		
+
     		assert winnerColor != EMPTY : "Winner is EMPTY and should not be EMPTY";
     		//iterate through the networks
     		while (cur.isValidNode()) {
     			try {
     				Network n = (Network) cur.item();
-    				if (n.color() != winnerColor) //that means that there's more than one color of winning network. 
+    				if (n.color() != winnerColor) //that means that there's more than one color of winning network.
     					return nextPlayer;
     				cur = cur.next();
     			} catch (InvalidNodeException e) {
     				assert false;
     			}
     		}
-    		//if we've gotten here, that means all the networks are of one color. 
+    		//if we've gotten here, that means all the networks are of one color.
     		return winnerColor;
     	}
-    	
+
     	/*
     	 * findWinningNetwork module begins here
     	 */
-    	
+
     	/**
     	 * Finds a DList of Networks
     	 * @return
@@ -334,11 +334,11 @@ public class Board {
     		}
     		return networks;
     	}
-    	
+
     	/**
     	 * Figures out if, from piece p, there exists a valid network. If so,
     	 * returns that network, otherwise, returns null.
-    	 * 
+    	 *
     	 * @param p
     	 * @return the network from p if it exists, null otherwise
     	 */
@@ -364,7 +364,7 @@ public class Board {
     		DList conns = this
     				.findPieceConnections(prevPieces[prevPieces.length - 1]);
     		assert conns.length() > 0;
-    		
+
     		//iterate through conns
     		for (DListNode node : conns) {
     			Piece p = (Piece) node.item();
@@ -388,18 +388,18 @@ public class Board {
     		//if we haven't found any, return null
     		return null;
     	}
-    	
+
     	private boolean isInEndZone(Piece p) {
     		int x = p.getX();
     		int y = p.getY();
     		int last = this.getDimension() - 1;
     		return x == 0 || y == 0 || x >= last || y >= last;
     	}
-    	
+
     	private boolean isInFarEndZoneIfAlreadyInEndZone(Piece p) {
     		return p.getX() != 0 && p.getY() != 0;
     	}
-    	
+
     	private static boolean containsPiece(Piece[] pieces, Piece p) {
     		assert pieces.length > 0;
     		for (Piece i : pieces) {
@@ -408,7 +408,7 @@ public class Board {
     		}
     		return false;
     	}
-    	
+
     	private static Piece[] appendToPieceArray(Piece[] original, Piece p) {
     		assert p != null;
     		Piece[] ans = new Piece[original.length + 1];
@@ -418,7 +418,7 @@ public class Board {
     		ans[original.length] = p;
     		return ans;
     	}
-    	
+
     	private static boolean inRayPath(Piece[] pieces, Piece p) {
     		if (pieces.length < 2) // no ray!
     			return false;
@@ -433,9 +433,9 @@ public class Board {
 
     	/**
     	 * A wrapper class for a Network of Pieces;
-    	 * 
+    	 *
     	 * @author Allen Li
-    	 * 
+    	 *
     	 */
     	private final class Network {
     		private final Piece[] pieces;
@@ -449,7 +449,7 @@ public class Board {
 
     		/**
     		 * The color of this network
-    		 * 
+    		 *
     		 * @return color
     		 */
     		int color() {
@@ -458,7 +458,7 @@ public class Board {
 
     		/**
     		 * The array containing the nodes in the network.
-    		 * 
+    		 *
     		 * @return a DList
     		 */
     		@SuppressWarnings("unused")
@@ -466,7 +466,7 @@ public class Board {
     			return pieces;
     		}
     	}
-	
+
 	/*
 	 * findWinningNetwork module ends here
 	 */

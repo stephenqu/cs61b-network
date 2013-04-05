@@ -194,10 +194,6 @@ public class Board {
             if ((!inBounds(from.getX(), from.getY()))) {
               return false;
             }
-            int distance = (from.getX() - to.getX())*(from.getX() - to.getX()) + (from.getY() - to.getY())*(from.getY() - to.getY());
-            if (distance >= 2 || distance == 0) {
-              return false;
-            }
           }
 
           if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(to.getColor(), to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(to)) {
@@ -219,11 +215,15 @@ public class Board {
          */
         public DList validMoves() {
           DList empties = new DList();
+          DList froms = new DList();
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
 		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j))) && inBounds(i,j)) {
 		    empties.insertBack(getPiece(i, j));
 		  }
+                  if (getPiece(i,j).getColor() == nextPlayer) {
+                    froms.insertBack(getPiece(i,j));
+                  }
 	    }
 	  }
 
@@ -241,11 +241,16 @@ public class Board {
               valids.insertBack(new Move(emptyX, emptyY));
             }
             else {
-              Piece[] froms = getSurroundings(emptyPiece);
-              for (Piece from : froms) {
-                if (from.getColor() == nextPlayer) {
-                  valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+              Piece from;
+              for (DListNode dLN : froms) {
+                try {
+                  from = ((Piece) dLN.item());
                 }
+                catch (InvalidNodeException e) {
+                  System.out.println("INException in validMoves.");
+                  from = new Piece(-1, -1, EMPTY);
+                }
+                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
               }
             }
           }

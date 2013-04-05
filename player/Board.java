@@ -229,28 +229,216 @@ public class Board {
           return valids;
         }
 
-	/**
-	 * Returns the identity of the winner, or EMPTY if there is none.
-	 * TODO
-	 * @return Which player has won
-	 */
-	public int winner() {
-		return EMPTY;
-	}
-	
-	/*
-	 * findWinningNetwork module begins here
-	 */
-	
-	private Network findWinningNetwork() {
-		return null;
-	}
-	
-	private class Network {
-		public Network() {
-			
-		}
-	}
+    	/**
+    	 * Returns the identity of the winner, or EMPTY if there is none.
+    	 * This is an expensive operation; this should only be done once per Board.
+    	 * TODO
+    	 * @return Which player has won
+    	 */
+    	public int winner() {
+    		DList networks = findWinningNetworks(); //get the winning networks
+    		if (networks.length() == 0) { //if there aren't any, nobody has won
+    			return EMPTY;
+    		}
+    		
+    		//find the color of the first network
+    		ListNode cur = networks.front();
+    		int winnerColor = EMPTY;
+    		try {
+    			Network n = (Network) cur.item();
+    			winnerColor = n.color();
+    			cur = cur.next();
+    		} catch (InvalidNodeException e) {
+    			assert false;
+    		}
+    		
+    		assert winnerColor != EMPTY : "Winner is EMPTY and should not be EMPTY";
+    		//iterate through the networks
+    		while (cur.isValidNode()) {
+    			try {
+    				Network n = (Network) cur.item();
+    				if (n.color() != winnerColor) //that means that there's more than one color of winning network. 
+    					return nextPlayer;
+    				cur = cur.next();
+    			} catch (InvalidNodeException e) {
+    				assert false;
+    			}
+    		}
+    		//if we've gotten here, that means all the networks are of one color. 
+    		return winnerColor;
+    	}
+    	
+    	/*
+    	 * findWinningNetwork module begins here
+    	 */
+    	
+    	/**
+    	 * Finds a DList of Networks
+    	 * @return
+    	 */
+    	private DList findWinningNetworks() {
+    		boolean TRUNCATED = false; //if true, will only search for one network of each color
+    		DList networks = new DList();
+    		//checks for BLACK networks
+    		for (int i = 1; i < this.getDimension() - 1; i++) {
+    			Piece p = this.getPiece(0, i);
+    			if (p.getColor() != Piece.EMPTY) {
+    				Network n = findNetwork(p);
+    				if (n != null) {
+    					networks.insertBack(n);
+    					if (TRUNCATED)
+    						break;
+    				}
+    			}
+    		}
+    		//checks for WHITE networks
+    		for (int i = 1; i < this.getDimension() - 1; i++) {
+    			Piece q = this.getPiece(i, 0);
+    			if (q.getColor() != Piece.EMPTY) {
+    				Network n = findNetwork(q);
+    				if (n != null) {
+    					networks.insertBack(n);
+    					if (TRUNCATED)
+    						break;
+    				}
+    			}
+    		}
+    		return networks;
+    	}
+    	
+    	/**
+    	 * Figures out if, from piece p, there exists a valid network. If so,
+    	 * returns that network, otherwise, returns null.
+    	 * 
+    	 * @param p
+    	 * @return the network from p if it exists, null otherwise
+    	 */
+    	private Network findNetwork(Piece p) {
+    		Piece[] pieceArray = new Piece[1];
+    		pieceArray[0] = p;
+    		Piece[] pieces;
+    		try {
+    			pieces = findNetwork(pieceArray);
+    			int x = 1 + 1;
+    			x = x + 2;
+    			if (pieces != null)
+    				return new Network(pieces);
+    			else
+    				return null;
+    		} catch (InvalidNodeException e) {
+    			e.printStackTrace();
+    			assert false;
+    		}
+    		return null;
+    	}
+
+    	private Piece[] findNetwork(Piece[] prevPieces) throws InvalidNodeException {
+    		// find connections for the last Piece in prevPieces
+    		DList conns = this
+    				.findPieceConnections(prevPieces[prevPieces.length - 1]);
+    		assert conns.length() > 0;
+    		
+    		//iterate through conns
+    		for (DListNode node : conns) {
+    			Piece p = (Piece) node.item();
+    			//if prevPieces doesn't contain p, and p isn't in the path of prevPieces
+    			if (!containsPiece(prevPieces, p) && !inRayPath(prevPieces, p)) {
+    				if (isInEndZone(p)) {
+    					if (isInFarEndZoneIfAlreadyInEndZone(p)) {
+    						if (prevPieces.length >= 5) { //this one will make 6!
+    							return appendToPieceArray(prevPieces, p);
+    						}
+    					} else {// it's not in the far endzone, so it's in the near one
+    						continue;
+    					}
+    				} else { //not in end zone
+    					Piece[] attempt = findNetwork(appendToPieceArray(prevPieces, p));
+    					if (attempt != null)
+    						return attempt;
+    				}
+    			}
+    		}
+    		//if we haven't found any, return null
+    		return null;
+    	}
+    	
+    	private boolean isInEndZone(Piece p) {
+    		int x = p.getX();
+    		int y = p.getY();
+    		int last = this.getDimension() - 1;
+    		return x == 0 || y == 0 || x >= last || y >= last;
+    	}
+    	
+    	private boolean isInFarEndZoneIfAlreadyInEndZone(Piece p) {
+    		return p.getX() != 0 && p.getY() != 0;
+    	}
+    	
+    	private static boolean containsPiece(Piece[] pieces, Piece p) {
+    		assert pieces.length > 0;
+    		for (Piece i : pieces) {
+    			if (i.equals(p))
+    				return true;
+    		}
+    		return false;
+    	}
+    	
+    	private static Piece[] appendToPieceArray(Piece[] original, Piece p) {
+    		assert p != null;
+    		Piece[] ans = new Piece[original.length + 1];
+    		for (int i = 0; i < original.length; i++) {
+    			ans[i] = original[i];
+    		}
+    		ans[original.length] = p;
+    		return ans;
+    	}
+    	
+    	private static boolean inRayPath(Piece[] pieces, Piece p) {
+    		if (pieces.length < 2) // no ray!
+    			return false;
+    		int x1 = pieces[pieces.length - 2].getX();
+    		int y1 = pieces[pieces.length - 2].getY();
+    		int x2 = pieces[pieces.length - 1].getX();
+    		int y2 = pieces[pieces.length - 1].getY();
+    		int x3 = p.getX();
+    		int y3 = p.getY();
+    		return (x2 - x1) * (y3 - y2) == (x3 - x2) * (y2 - y1);
+    	}
+
+    	/**
+    	 * A wrapper class for a Network of Pieces;
+    	 * 
+    	 * @author Allen Li
+    	 * 
+    	 */
+    	private final class Network {
+    		private final Piece[] pieces;
+    		private final int color;
+
+    		Network(Piece[] pieces) {
+    			assert pieces.length >= 6;
+    			this.pieces = pieces;
+    			this.color = pieces[0].getColor();
+    		}
+
+    		/**
+    		 * The color of this network
+    		 * 
+    		 * @return color
+    		 */
+    		int color() {
+    			return this.color;
+    		}
+
+    		/**
+    		 * The array containing the nodes in the network.
+    		 * 
+    		 * @return a DList
+    		 */
+    		@SuppressWarnings("unused")
+    		Piece[] getPieces() {
+    			return pieces;
+    		}
+    	}
 	
 	/*
 	 * findWinningNetwork module ends here

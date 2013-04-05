@@ -68,6 +68,7 @@ public class Board {
          */
 
         public int otherPlayer(int player) {
+          assert (player == WHITE || player == BLACK);
           if (player == WHITE) {
             return BLACK;
           }

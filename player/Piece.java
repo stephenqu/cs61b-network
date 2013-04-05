@@ -60,5 +60,16 @@ class Piece {
 	public boolean equals(Piece p) {
 		return p.x == this.x && p.y == this.y && p.color == this.color;
 	}
+	
+	public String toString() {
+		String colorString = "";
+		if (color == BLACK)
+			colorString = "BLACK";
+		else if (color == WHITE)
+			colorString = "WHITE";
+		else if (color == EMPTY)
+			colorString = "EMPTY";
+		return colorString + " Piece at (" + x + ", " + y + ")";
+	}
 
 }

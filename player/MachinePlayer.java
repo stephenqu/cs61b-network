@@ -31,7 +31,7 @@ public class MachinePlayer extends Player {
   * @param color is the color of this MachinePLayer
   **/
   public MachinePlayer(int color) {
-      this(color, 1);
+      this(color, 3);
       variableDepth = true;
   }
 
@@ -62,15 +62,15 @@ public class MachinePlayer extends Player {
   public Move chooseMove() {
       Move theChosen;
       if (variableDepth && (board.getNumMoves() > 20)){
-          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth-2).bestMove;
+          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
       }else{
           theChosen = chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
       }
       assert theChosen != null;
       board.doMove(theChosen);
-      System.out.println("Computer color is " + this.COLOR);
-      System.out.println("Next player is "+board.getNextPlayer());
-      System.out.println(board);
+      //System.out.println("Computer color is " + this.COLOR);
+      //System.out.println("Next player is "+board.getNextPlayer());
+      //System.out.println(board);
       return theChosen;
   }
 
@@ -85,6 +85,7 @@ public class MachinePlayer extends Player {
   * @return a Best object that stores the best Move and the score of that Move.
   **/
   public Best chooseMove(int side, double alpha, double beta, int depth){
+      //System.out.println("" + depth);
       Best bestMove = new Best();
       Best bestReply;
       DList moves = board.validMoves();
@@ -93,9 +94,9 @@ public class MachinePlayer extends Player {
       boardScore = -1*board.boardEval(); // Flips the scale when Computer is BLACK, because 1 is the case where WHITE wins, and -1 is the case where BLACK wins.
       }
       if (depth == maxDepth) {
-        System.out.println(moves);
+        //System.out.println(moves);
       }
-
+      //System.out.println(board.boardEval());
       if ( (depth == 0) || (boardScore == 1) || (boardScore == -1) || (moves.length()==0) ){
 	  return new Best(boardScore);
       }
@@ -146,8 +147,8 @@ public class MachinePlayer extends Player {
   **/
   public boolean opponentMove(Move m) {
       boolean opp = board.doMove(m);
-      System.out.println("The opponent has moved!");
-      System.out.println(board);
+      //System.out.println("The opponent has moved!");
+      //System.out.println(board);
       return opp;
   }
 

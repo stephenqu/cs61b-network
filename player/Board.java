@@ -139,14 +139,17 @@ public class Board {
 	public boolean makesCluster(Piece p) {
 	    int inCluster = 0;
 	    for (Piece p1: getSurroundings(p)) {
-		if (p1.getColor() == p.getColor()) {
+                if (p1 == null) {
+                  continue;
+                }
+                if (p1.getColor() == p.getColor()) {
 		    inCluster++;
 		}
 		if (inCluster > 1) {
 		    return false;
 		}
 		for (Piece p2: getSurroundings(p1)) {
-		    if (p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
+		    if (p2 != null && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
 			return false;
 		    }
 		}
@@ -219,16 +222,17 @@ public class Board {
           DList froms = new DList();
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
-		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j))) && inBounds(i,j)) {
+		  if (inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j)))) {
 		    empties.insertBack(getPiece(i, j));
 		  }
-                  if (getPiece(i,j).getColor() == nextPlayer) {
+                  if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {
                     froms.insertBack(getPiece(i,j));
                   }
 	    }
 	  }
 
           DList valids = new DList();
+          System.out.println(empties);
           for (DListNode empty : empties) {
         	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
 			try {
@@ -550,6 +554,9 @@ public class Board {
           whiteScore += conn[0];
           blackScore += conn[1];
 
+          if (whiteScore == 0 && blackScore == 0) {
+            return 0;
+          }
           return (whiteScore - blackScore) / (whiteScore + blackScore);
 
         }

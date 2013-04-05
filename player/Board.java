@@ -756,7 +756,26 @@ public class Board {
 		b.addPiece(5, 2, WHITE);
 		b.addPiece(5, 5, WHITE);
 		b.addPiece(7, 5, WHITE);
+		b.addPiece(4, 2, BLACK);
+		b.addPiece(4, 3, BLACK);
+		b.addPiece(4, 5, BLACK);
+		b.addPiece(4, 7, BLACK);
+		b.addPiece(5, 4, BLACK);
+		b.addPiece(6, 0, BLACK);
+		b.addPiece(3, 1, WHITE);
+		b.addPiece(7, 1, WHITE);
 		System.out.println(b);
 		System.out.println(b.winner());
+		
+		Piece[] pieces = new Piece[2];
+		pieces[0] = new Piece(5, 4, WHITE);
+		pieces[1] = new Piece(3, 4, WHITE);
+		try {
+			Piece[] ans = b.findNetwork(pieces);
+			int x = 1;
+		} catch (InvalidNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

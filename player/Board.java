@@ -192,7 +192,7 @@ public class Board {
             return true;
           }
 	  Piece to = this.getPiece(m.x1, m.y1);
-          if ((m.moveKind == Move.STEP && numMoves <= 20) || (m.moveKind == Move.ADD && numMoves > 20)) {
+          if ((m.moveKind == Move.STEP && numMoves < 20) || (m.moveKind == Move.ADD && numMoves >= 20)) {
             return false;
           }
           if (m.moveKind == Move.STEP) {
@@ -246,7 +246,7 @@ public class Board {
 				assert false;
 			}
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            if (numMoves <= 20) {
+            if (numMoves < 20) {
               valids.insertBack(new Move(emptyX, emptyY));
             }
             else {
@@ -561,7 +561,7 @@ public class Board {
           if (whiteScore == 0 && blackScore == 0) {
             return 0;
           }
-          return (whiteScore - blackScore) / (whiteScore + blackScore);
+          return .99 * ((double) (whiteScore - blackScore)) / ((double) (whiteScore + blackScore));
 
         }
 

@@ -183,7 +183,7 @@ public class Board {
 	 */
 	public boolean validMove(Move m) {
 	  Piece to = this.getPiece(m.x2, m.y2);
-          if ((m.moveKind == Move.STEP && numMoves <= 10) || (m.moveKind == Move.ADD && numMoves > 10)) {
+          if ((m.moveKind == Move.STEP && numMoves <= 20) || (m.moveKind == Move.ADD && numMoves > 20)) {
             return false;
           }
           if (m.moveKind == Move.STEP) {
@@ -192,6 +192,10 @@ public class Board {
               return false;
             }
             if ((!inBounds(from.getX(), from.getY()))) {
+              return false;
+            }
+            int distance = (from.getX() - to.getX())*(from.getX() - to.getX()) + (from.getY() - to.getY())*(from.getY() - to.getY());
+            if (distance >= 2 || distance == 0) {
               return false;
             }
           }
@@ -233,7 +237,7 @@ public class Board {
 				assert false;
 			}
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            if (numMoves <= 10) {
+            if (numMoves <= 20) {
               valids.insertBack(new Move(emptyX, emptyY));
             }
             else {
@@ -284,9 +288,9 @@ public class Board {
 	public boolean doMove(Move m) {
           if (validMove(m)) {
             if (m.moveKind == Move.STEP) {
-              removePiece(getPiece(m.x2,m.x1));
+              removePiece(getPiece(m.x2,m.y2));
             }
-            addPiece(new Piece(m.x1, m.x2, otherPlayer(nextPlayer)));
+            addPiece(new Piece(m.x1, m.y1, otherPlayer(nextPlayer)));
             nextPlayer = otherPlayer(nextPlayer);
             numMoves++;
             return true;

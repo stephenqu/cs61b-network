@@ -748,5 +748,15 @@ public class Board {
 
 	public static void main(String[] args) {
 		System.out.println("Hello World");
+		Board b = new Board();
+		b.addPiece(0, 1, WHITE);
+		b.addPiece(2, 1, WHITE);
+		b.addPiece(2, 4, WHITE);
+		b.addPiece(3, 4, WHITE);
+		b.addPiece(5, 2, WHITE);
+		b.addPiece(5, 5, WHITE);
+		b.addPiece(7, 5, WHITE);
+		System.out.println(b);
+		System.out.println(b.winner());
 	}
 }

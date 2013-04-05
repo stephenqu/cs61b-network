@@ -544,10 +544,10 @@ public class Board {
 
           int winner = this.winner();
           if (winner == WHITE) {
-            return WHITE;
+            return 1;
           }
           if (winner == BLACK) {
-            return BLACK;
+            return -1;
           }
 
           int[] conn = findAllConnections();

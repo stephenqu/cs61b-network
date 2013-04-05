@@ -277,10 +277,11 @@ public class Board {
 
 	/**
 	 * Executes the Move m in the parameter if it is valid.
-	 * TODO
+	 *
 	 * @param m
+         * @return true if it does move, else false
 	 */
-	public void doMove(Move m) {
+	public boolean doMove(Move m) {
           if (validMove(m)) {
             if (m.moveKind == Move.STEP) {
               removePiece(getPiece(m.x2,m.x1));
@@ -288,7 +289,9 @@ public class Board {
             addPiece(new Piece(m.x1, m.x2, otherPlayer(nextPlayer)));
             nextPlayer = otherPlayer(nextPlayer);
             numMoves++;
+            return true;
 	  }
+          return false;
         }
 
         /**

@@ -13,7 +13,7 @@ public class MachinePlayer extends Player {
   * COLOR is the color this machine player is playing as.
   * maxDepth is the maximum search depth for this MachinePlayer.
   * board is this MachinePlayer's internal representation of a game board.
-  * variableDepth is a boolean that indicates whether this MachinePlayer 
+  * variableDepth is a boolean that indicates whether this MachinePlayer
   *   uses a variable search depth.
   **/
 
@@ -23,7 +23,7 @@ public class MachinePlayer extends Player {
   private Board board;
   private boolean variableDepth = false;
 
-    
+
  /**
   *  Creates a machine player with the given color.  Color is either 0 (black)
   *  or 1 (white).  (White has the first move.)
@@ -31,7 +31,7 @@ public class MachinePlayer extends Player {
   * @param color is the color of this MachinePLayer
   **/
   public MachinePlayer(int color) {
-      this(color, 5);
+      this(color, 1);
       variableDepth = true;
   }
 
@@ -60,10 +60,18 @@ public class MachinePlayer extends Player {
   * @return the best move found by minimax/alpha-beta pruning
   **/
   public Move chooseMove() {
+      Move theChosen;
       if (variableDepth && (board.getNumMoves() > 20)){
-	  return chooseMove(this.COLOR, -1, 1, maxDepth-2).bestMove;
+          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth-2).bestMove;
+      }else{
+          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
       }
-      return chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
+      assert theChosen != null;
+      board.doMove(theChosen);
+      System.out.println("Computer color is " + this.COLOR);
+      System.out.println("Next player is "+board.getNextPlayer());
+      System.out.println(board);
+      return theChosen;
   }
 
  /**
@@ -71,7 +79,7 @@ public class MachinePlayer extends Player {
   * best move within this MachinePlayer's specified search depth
   *
   * @param side is the player that is about to make their move
-  *        alpha is the best move that the computer can achieve 
+  *        alpha is the best move that the computer can achieve
   *        beta is the best move that the opponent can achieve
   *        depth is the maximum search depth of the algorithm
   * @return a Best object that stores the best Move and the score of that Move.
@@ -81,6 +89,9 @@ public class MachinePlayer extends Player {
       Best bestReply;
       DList moves = board.validMoves();
       double boardScore = board.boardEval();
+      if (depth == maxDepth) {
+        System.out.println(moves);
+      }
 
       if ( (depth == 0) || (boardScore == 1) || (boardScore == -1) || (moves.length()==0) ){
 	  return new Best(boardScore);
@@ -99,7 +110,7 @@ public class MachinePlayer extends Player {
       try{
       for (DListNode m: moves){
 	  board.doMove( (Move) (m.item()) );
-	  bestReply = chooseMove(board.otherPlayer(side), alpha, beta, depth-1);
+      	  bestReply = chooseMove(board.getNextPlayer(), alpha, beta, depth-1);
 	  board.reverseMove( (Move) (m.item()) );
 	  if ( (side == this.COLOR) && (bestReply.score > bestMove.score)){
 	      bestMove.bestMove = (Move) m.item();
@@ -131,7 +142,10 @@ public class MachinePlayer extends Player {
   * @return true if the move was successful
   **/
   public boolean opponentMove(Move m) {
-      return board.doMove(m);
+      boolean opp = board.doMove(m);
+      System.out.println("The opponent has moved!");
+      System.out.println(board);
+      return opp;
   }
 
  /**
@@ -154,7 +168,7 @@ public class MachinePlayer extends Player {
  * A private class that stores a Move and a score associated with performing
  * that Move.
  **/
-       
+
 class Best{
     /**
      * bestMove is the bestMove of a given player.
@@ -169,7 +183,7 @@ class Best{
      **/
     public Best(){
     }
-    
+
     /**
      * Creates a new Best with the given score
      *

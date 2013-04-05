@@ -96,10 +96,10 @@ public class MachinePlayer extends Player {
       }else{
 	  bestMove.score = beta;
       }
-
+      try{
       for (DListNode m: moves){
 	  board.doMove( (Move) (m.item()) );
-	  bestReply = chooseMove(otherPlayer(side), alpha, beta, depth-1);
+	  bestReply = chooseMove(board.otherPlayer(side), alpha, beta, depth-1);
 	  board.reverseMove( (Move) (m.item()) );
 	  if ( (side == this.COLOR) && (bestReply.score > bestMove.score)){
 	      bestMove.bestMove = (Move) m.item();
@@ -114,6 +114,9 @@ public class MachinePlayer extends Player {
 	  if (alpha >= beta){
 	      return bestMove;
 	  }
+      }
+      }catch (InvalidNodeException e){
+    	  assert false;
       }
       return bestMove;
   }

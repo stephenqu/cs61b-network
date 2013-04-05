@@ -184,7 +184,7 @@ public class Board {
 	 */
 	public boolean validMove(Move m) {
 	  Piece to = this.getPiece(m.x2, m.y2);
-          if ((m.moveKind == Move.STEP && numMoves <= 10) || (m.moveKind == Move.ADD && numMoves > 10)) {
+          if ((m.moveKind == Move.STEP && numMoves <= 20) || (m.moveKind == Move.ADD && numMoves > 20)) {
             return false;
           }
           if (m.moveKind == Move.STEP) {
@@ -216,11 +216,15 @@ public class Board {
          */
         public DList validMoves() {
           DList empties = new DList();
+          DList froms = new DList();
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
 		  if (getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j) && !(makesCluster(nextPlayer, i, j))) && inBounds(i,j)) {
 		    empties.insertBack(getPiece(i, j));
 		  }
+                  if (getPiece(i,j).getColor() == nextPlayer) {
+                    froms.insertBack(getPiece(i,j));
+                  }
 	    }
 	  }
 
@@ -234,15 +238,20 @@ public class Board {
 				assert false;
 			}
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            if (numMoves <= 10) {
+            if (numMoves <= 20) {
               valids.insertBack(new Move(emptyX, emptyY));
             }
             else {
-              Piece[] froms = getSurroundings(emptyPiece);
-              for (Piece from : froms) {
-                if (from.getColor() == nextPlayer) {
-                  valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+              Piece from;
+              for (DListNode dLN : froms) {
+                try {
+                  from = ((Piece) dLN.item());
                 }
+                catch (InvalidNodeException e) {
+                  System.out.println("INException in validMoves.");
+                  from = new Piece(-1, -1, EMPTY);
+                }
+                valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
               }
             }
           }
@@ -471,9 +480,9 @@ public class Board {
 	public boolean doMove(Move m) {
           if (validMove(m)) {
             if (m.moveKind == Move.STEP) {
-              removePiece(getPiece(m.x2,m.x1));
+              removePiece(getPiece(m.x2,m.y2));
             }
-            addPiece(new Piece(m.x1, m.x2, otherPlayer(nextPlayer)));
+            addPiece(new Piece(m.x1, m.y1, otherPlayer(nextPlayer)));
             nextPlayer = otherPlayer(nextPlayer);
             numMoves++;
             return true;

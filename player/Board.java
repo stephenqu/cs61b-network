@@ -104,7 +104,7 @@ public class Board {
          * @return Piece[8] of surroundings
          */
         public Piece[] getSurroundings(int color, int x, int y) {
-          Piece p = new Piece(color, x, y);
+          Piece p = new Piece(x, y, color);
           return getSurroundings(p);
         }
 
@@ -125,7 +125,7 @@ public class Board {
          * @return true if making pieces.[x][y] color creates a 'cluster'
          */
         public boolean makesCluster(int color, int x, int y) {
-          Piece p = new Piece(color, x, y);
+          Piece p = new Piece(x, y, color);
     	  return makesCluster(p);
         }
 
@@ -146,15 +146,17 @@ public class Board {
 		    inCluster++;
 		}
 		if (inCluster > 1) {
-		    return false;
+		    return true;
 		}
+
 		for (Piece p2: getSurroundings(p1)) {
-		    if (p2 != null && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
-			return false;
+		    if (p2 != null && !(p2.equals(p)) && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
+                        //System.out.println("got here when p is " + p + " and p1 is " + p1 + " and p2 is " + p2);
+			return true;
 		    }
 		}
 	    }
-	    return true;
+	    return false;
         }
 
         /**
@@ -186,6 +188,9 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	public boolean validMove(Move m) {
+          if (m.moveKind == Move.QUIT) {
+            return true;
+          }
 	  Piece to = this.getPiece(m.x1, m.y1);
           if ((m.moveKind == Move.STEP && numMoves <= 20) || (m.moveKind == Move.ADD && numMoves > 20)) {
             return false;
@@ -199,8 +204,7 @@ public class Board {
               return false;
             }
           }
-
-          if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(to.getColor(), to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(to)) {
+          if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(nextPlayer, to.getX(), to.getY()) || to.getColor() != EMPTY || makesCluster(nextPlayer, to.getX(), to.getY())) {
 	      return false;
           }
           return true;
@@ -222,17 +226,17 @@ public class Board {
           DList froms = new DList();
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
-		  if (inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j)) && !(makesCluster(nextPlayer, i, j))) {
+              if (inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j)) && !(makesCluster(nextPlayer, i, j))) {
 		    empties.insertBack(getPiece(i, j));
-		  }
-                  if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {
+	      }
+              if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {
                     froms.insertBack(getPiece(i,j));
-                  }
+              }
 	    }
 	  }
 
           DList valids = new DList();
-          System.out.println(empties);
+          //System.out.println("empties is " + empties);
           for (DListNode empty : empties) {
         	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
 			try {
@@ -367,7 +371,6 @@ public class Board {
     		// find connections for the last Piece in prevPieces
     		DList conns = this
     				.findPieceConnections(prevPieces[prevPieces.length - 1]);
-    		assert conns.length() > 0;
 
     		//iterate through conns
     		for (DListNode node : conns) {
@@ -486,11 +489,12 @@ public class Board {
             if (m.moveKind == Move.STEP) {
               removePiece(getPiece(m.x2,m.y2));
             }
-            addPiece(new Piece(m.x1, m.y1, otherPlayer(nextPlayer)));
+            addPiece(new Piece(m.x1, m.y1, nextPlayer));
             nextPlayer = otherPlayer(nextPlayer);
             numMoves++;
             return true;
 	  }
+          System.out.println("tried to do move " + m + " but failed.");
           return false;
         }
 

@@ -56,5 +56,9 @@ class Piece {
 	public void setColor(int color) {
 		this.color = color;
 	}
+	
+	public boolean equals(Piece p) {
+		return p.x == this.x && p.y == this.y && p.color == this.color;
+	}
 
 }

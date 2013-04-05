@@ -61,6 +61,22 @@ public class Board {
 	}
 
         /**
+         * Returns the color of the other player.
+         *
+         * @param player
+         * @return other color
+         */
+
+        public int otherPlayer(int player) {
+          if (player == WHITE) {
+            return BLACK;
+          }
+          else {
+            return WHITE;
+          }
+        }
+
+        /**
          * Returns an 8 element array of pieces representing the neighbors of
          * the parameter piece, or null if a neighboring spot is out of bounds.
          *
@@ -167,6 +183,9 @@ public class Board {
 	 */
 	public boolean validMove(Move m) {
 	  Piece to = this.getPiece(m.x2, m.y2);
+          if ((m.moveKind == Move.STEP && numMoves <= 10) || (m.moveKind == Move.ADD && numMoves > 10)) {
+            return false;
+          }
           if (m.moveKind == Move.STEP) {
             Piece from = this.getPiece(m.x1, m.y1);
             if (from.getColor() != nextPlayer) {
@@ -206,7 +225,7 @@ public class Board {
 
           DList valids = new DList();
           for (DListNode empty : empties) {
-        	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
+            Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
 			try {
 				emptyPiece = ((Piece) empty.item());
 			} catch (InvalidNodeException e) {
@@ -237,21 +256,21 @@ public class Board {
 	public int winner() {
 		return EMPTY;
 	}
-	
+
 	/*
 	 * findWinningNetwork module begins here
 	 */
-	
+
 	private Network findWinningNetwork() {
 		return null;
 	}
-	
+
 	private class Network {
 		public Network() {
-			
+
 		}
 	}
-	
+
 	/*
 	 * findWinningNetwork module ends here
 	 */
@@ -262,7 +281,29 @@ public class Board {
 	 * @param m
 	 */
 	public void doMove(Move m) {
-	}
+          if (validMove(m)) {
+            if (m.moveKind == Move.STEP) {
+              removePiece(getPiece(m.x2,m.x1));
+            }
+            addPiece(new Piece(m.x1, m.x2, otherPlayer(nextPlayer)));
+            nextPlayer = otherPlayer(nextPlayer);
+            numMoves++;
+	  }
+        }
+
+        /**
+         * Undoes the Move m
+         *
+         * @param m
+         */
+        public void reverseMove(Move m) {
+          if (m.moveKind == Move.STEP) {
+            pieces[m.x2][m.y2] = new Piece(m.x2, m.y2, otherPlayer(nextPlayer));
+          }
+          pieces[m.x1][m.y1] = new Piece(m.x1, m.y1, EMPTY);
+          nextPlayer = otherPlayer(nextPlayer);
+          numMoves--;
+        }
 
 	/**
 	 * Returns the player's color who will perform the next move.
@@ -414,6 +455,19 @@ public class Board {
 		pieces[p.getX()][p.getY()] = p;
 		return true;
 	}
+
+        /**
+         * Removes the Piece p from this Board. It will be used by reverse move
+         * and doMove.
+         *
+         * @param p
+         */
+        public void removePiece(Piece p) {
+          if (p.getColor() == EMPTY) {
+            System.out.println("Can't remove an empty Piece");
+          }
+          pieces[p.getX()][p.getY()] = p;
+        }
 
 	/**
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece

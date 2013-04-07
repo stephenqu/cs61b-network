@@ -67,7 +67,7 @@ public class Board {
          * @return other color
          */
 
-        protected int otherPlayer(int player) {
+        protected static int otherPlayer(int player) {
           assert (player == WHITE || player == BLACK);
           if (player == WHITE) {
             return BLACK;
@@ -84,7 +84,7 @@ public class Board {
          * @param Piece p
          * @return Piece[8] of surroundings
          */
-        protected Piece[] getSurroundings(Piece p) {
+        private Piece[] getSurroundings(Piece p) {
           Piece[] surround = new Piece[8];
           surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
           surround[1] = getPiece(p.getX(), p.getY() - 1);
@@ -103,7 +103,7 @@ public class Board {
          * @param int color, int x, int y
          * @return Piece[8] of surroundings
          */
-        protected Piece[] getSurroundings(int color, int x, int y) {
+        private Piece[] getSurroundings(int color, int x, int y) {
           Piece p = new Piece(x, y, color);
           return getSurroundings(p);
         }
@@ -114,7 +114,7 @@ public class Board {
          * @param positions x and y
          * @return true if coordinates are within the board
          */
-        protected boolean inBounds(int x, int y) {
+        private boolean inBounds(int x, int y) {
 	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
 	}
         /**
@@ -124,7 +124,7 @@ public class Board {
          * @param color, x, y
          * @return true if making pieces.[x][y] color creates a 'cluster'
          */
-        protected boolean makesCluster(int color, int x, int y) {
+        private boolean makesCluster(int color, int x, int y) {
           Piece p = new Piece(x, y, color);
     	  return makesCluster(p);
         }
@@ -136,7 +136,7 @@ public class Board {
          * @param piece
          * @return true if adding this piece creates a 'cluster'
          */
-	protected boolean makesCluster(Piece p) {
+	private boolean makesCluster(Piece p) {
 	    int inCluster = 0;
 	    for (Piece p1: getSurroundings(p)) {
                 if (p1 == null) {
@@ -165,7 +165,7 @@ public class Board {
          * @param color, x, y
          * @return true if a piece of this color at position x,y is in the opponent's goal
          */
-        protected boolean inOpponentGoal(int color, int x, int y) {
+        private boolean inOpponentGoal(int color, int x, int y) {
 	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
         }
 
@@ -175,7 +175,7 @@ public class Board {
 	 * @param piece
 	 * @return true if piece will be in its opponent's goal
 	 */
-	protected boolean inOpponentGoal(Piece piece){
+	private boolean inOpponentGoal(Piece piece){
 	    return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
 	}
 
@@ -522,7 +522,7 @@ public class Board {
 	 * @param m
          * @return true if it does move, else false
 	 */
-	protected boolean doMove(Move m) {
+	public boolean doMove(Move m) {
           if (m.moveKind == Move.QUIT) {
             return true;
           }
@@ -585,7 +585,7 @@ public class Board {
          *
          * @return this board's evaluation
          */
-        protected double boardEval() {
+        public double boardEval() {
           int whiteScore = 0;
           int blackScore = 0;
 

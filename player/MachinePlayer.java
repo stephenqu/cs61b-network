@@ -122,7 +122,7 @@ public class MachinePlayer extends Player {
 	      bestMove.score = bestReply.score;
 	      alpha = bestReply.score;
 	  }
-	  if ( (side == board.otherPlayer(this.COLOR)) && (bestReply.score < bestMove.score)){
+	  if ( (side == Board.otherPlayer(this.COLOR)) && (bestReply.score < bestMove.score)){
 	      bestMove.bestMove = (Move) m.item();
 	      bestMove.score = bestReply.score;
 	      beta = bestReply.score;

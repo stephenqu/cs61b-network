@@ -654,7 +654,6 @@ public class Board {
          * @return DList of Pieces
          */
         protected DList findPieceConnections(Piece p) {
-          int x = p.getX(), y = p.getY();
           DList connections = new DList();
           //Checks for connections in all diagonal and orthogonal directions.
           for (int i = -1; i < 2; i++) {

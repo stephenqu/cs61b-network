@@ -36,138 +36,138 @@ public class Board {
 		}
 	}
 
-        /**
-         * Returns the row/column length of the board.
-         *
-         * @return this board's dimension
-         */
-        protected int getDimension() {
-          return pieces.length;
-        }
-
-        /**
-         * Returns the piece at X and Y position.
-         *
-         * @param positions x and y
-         * @return Piece at position x,y
-         */
-        protected Piece getPiece(int x, int y){
-          if (inBounds(x, y)) {
-            return pieces[x][y];
-          }
-          else {
-	    return null;
-          }
+	/**
+	 * Returns the row/column length of the board.
+	 *
+	 * @return this board's dimension
+	 */
+	protected int getDimension() {
+		return pieces.length;
 	}
 
-        /**
-         * Returns the color of the other player.
-         *
-         * @param player
-         * @return other color
-         */
-
-        protected static int otherPlayer(int player) {
-          assert (player == WHITE || player == BLACK);
-          if (player == WHITE) {
-            return BLACK;
-          }
-          else {
-            return WHITE;
-          }
-        }
-
-        /**
-         * Returns an 8 element array of pieces representing the neighbors of
-         * the parameter piece. Out of bounds entries are null.
-         *
-         * @param Piece p
-         * @return Piece[8] of surroundings
-         */
-        private Piece[] getSurroundings(Piece p) {
-          Piece[] surround = new Piece[8];
-          surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
-          surround[1] = getPiece(p.getX(), p.getY() - 1);
-          surround[2] = getPiece(p.getX() + 1, p.getY() - 1);
-          surround[3] = getPiece(p.getX() - 1, p.getY());
-          surround[4] = getPiece(p.getX() + 1, p.getY());
-          surround[5] = getPiece(p.getX() - 1, p.getY() + 1);
-          surround[6] = getPiece(p.getX(), p.getY() + 1);
-          surround[7] = getPiece(p.getX() + 1, p.getY() + 1);
-          return surround;
-        }
-
-        /**
-         * getSurroundings for specific parameters.
-         *
-         * @param int color, int x, int y
-         * @return Piece[8] of surroundings
-         */
-        private Piece[] getSurroundings(int color, int x, int y) {
-          Piece p = new Piece(x, y, color);
-          return getSurroundings(p);
-        }
-
-        /**
-         * Returns true if the x and y coordinates are in the board.
-         *
-         * @param positions x and y
-         * @return true if coordinates are within the board
-         */
-        private boolean inBounds(int x, int y) {
-	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
+	/**
+	 * Returns the piece at X and Y position.
+	 *
+	 * @param positions x and y
+	 * @return Piece at position x,y
+	 */
+	protected Piece getPiece(int x, int y){
+		if (inBounds(x, y)) {
+			return pieces[x][y];
+		}
+		else {
+			return null;
+		}
 	}
-        /**
-         * Returns true if a Piece of color == color at coordinates x, y
-         * will create a cluster of three touching pieces of the same color.
-         *
-         * @param color, x, y
-         * @return true if making pieces.[x][y] color creates a 'cluster'
-         */
-        private boolean makesCluster(int color, int x, int y) {
-          Piece p = new Piece(x, y, color);
-    	  return makesCluster(p);
-        }
 
-        /**
-         * Returns true if this Piece will create a cluster of three
-         * touching pieces of the same color.
-         *
-         * @param piece
-         * @return true if adding this piece creates a 'cluster'
-         */
+	/**
+	 * Returns the color of the other player.
+	 *
+	 * @param player
+	 * @return other color
+	 */
+
+	protected static int otherPlayer(int player) {
+		assert (player == WHITE || player == BLACK);
+		if (player == WHITE) {
+			return BLACK;
+		}
+		else {
+			return WHITE;
+		}
+	}
+
+	/**
+	 * Returns an 8 element array of pieces representing the neighbors of
+	 * the parameter piece. Out of bounds entries are null.
+	 *
+	 * @param Piece p
+	 * @return Piece[8] of surroundings
+	 */
+	private Piece[] getSurroundings(Piece p) {
+		Piece[] surround = new Piece[8];
+		surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
+		surround[1] = getPiece(p.getX(), p.getY() - 1);
+		surround[2] = getPiece(p.getX() + 1, p.getY() - 1);
+		surround[3] = getPiece(p.getX() - 1, p.getY());
+		surround[4] = getPiece(p.getX() + 1, p.getY());
+		surround[5] = getPiece(p.getX() - 1, p.getY() + 1);
+		surround[6] = getPiece(p.getX(), p.getY() + 1);
+		surround[7] = getPiece(p.getX() + 1, p.getY() + 1);
+		return surround;
+	}
+
+	/**
+	 * getSurroundings for specific parameters.
+	 *
+	 * @param int color, int x, int y
+	 * @return Piece[8] of surroundings
+	 */
+	private Piece[] getSurroundings(int color, int x, int y) {
+		Piece p = new Piece(x, y, color);
+		return getSurroundings(p);
+	}
+
+	/**
+	 * Returns true if the x and y coordinates are in the board.
+	 *
+	 * @param positions x and y
+	 * @return true if coordinates are within the board
+	 */
+	private boolean inBounds(int x, int y) {
+		return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
+	}
+	/**
+	 * Returns true if a Piece of color == color at coordinates x, y
+	 * will create a cluster of three touching pieces of the same color.
+	 *
+	 * @param color, x, y
+	 * @return true if making pieces.[x][y] color creates a 'cluster'
+	 */
+	private boolean makesCluster(int color, int x, int y) {
+		Piece p = new Piece(x, y, color);
+		return makesCluster(p);
+	}
+
+	/**
+	 * Returns true if this Piece will create a cluster of three
+	 * touching pieces of the same color.
+	 *
+	 * @param piece
+	 * @return true if adding this piece creates a 'cluster'
+	 */
 	private boolean makesCluster(Piece p) {
-	    int inCluster = 0;
-	    for (Piece p1: getSurroundings(p)) {
-                if (p1 == null) {
-                  continue;
-                }
-                if (p1.getColor() == p.getColor()) {
-		    inCluster++;
-		}
-		if (inCluster > 1) {
-		    return true;
-		}
+		int inCluster = 0;
+		for (Piece p1: getSurroundings(p)) {
+			if (p1 == null) {
+				continue;
+			}
+			if (p1.getColor() == p.getColor()) {
+				inCluster++;
+			}
+			if (inCluster > 1) {
+				return true;
+			}
 
-		for (Piece p2: getSurroundings(p1)) {
-		    if (p2 != null && !(p2.equals(p)) && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
-			return true;
-		    }
+			for (Piece p2: getSurroundings(p1)) {
+				if (p2 != null && !(p2.equals(p)) && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
+					return true;
+				}
+			}
 		}
-	    }
-	    return false;
-        }
+		return false;
+	}
 
-        /**
-         * Returns true if a Piece of color color in the position x, y
-         * will be in its opponent's goal.
-         *
-         * @param color, x, y
-         * @return true if a piece of this color at position x,y is in the opponent's goal
-         */
-        private boolean inOpponentGoal(int color, int x, int y) {
-	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
-        }
+	/**
+	 * Returns true if a Piece of color color in the position x, y
+	 * will be in its opponent's goal.
+	 *
+	 * @param color, x, y
+	 * @return true if a piece of this color at position x,y is in the opponent's goal
+	 */
+	private boolean inOpponentGoal(int color, int x, int y) {
+		return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
+	}
 
 	/**
 	 * Returns true if this Piece will be in its opponent's goal.
@@ -176,7 +176,7 @@ public class Board {
 	 * @return true if piece will be in its opponent's goal
 	 */
 	private boolean inOpponentGoal(Piece piece){
-	    return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
+		return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
 	}
 
 
@@ -187,317 +187,317 @@ public class Board {
 	 * @return Whether the move is valid
 	 */
 	protected boolean validMove(Move m) {
-          if (m.moveKind == Move.QUIT) {
-            return true;
-          }
-	  Piece to = this.getPiece(m.x1, m.y1);
-          if (to == null){
-              return false;
-          }
-          if ((m.moveKind == Move.STEP && numMoves < 20) || (m.moveKind == Move.ADD && numMoves >= 20)) {
-            return false;
-          }
-          if (m.moveKind == Move.STEP) {
-            Piece from = this.getPiece(m.x2, m.y2);
-            if (from.getColor() != nextPlayer) {
-              return false;
-            }
-            if (from.getX() == to.getX() && from.getY() == to.getY()) {
-              return false;
-            }
-            if ((!inBounds(from.getX(), from.getY()))) {
-              return false;
-            }
-            //The following code accounts for the fact that the result of a
-            //step move can't be seen without removing the from Piece.
-            removePiece(from);
-            if (makesCluster(nextPlayer, to.getX(), to.getY())) {
-              addPiece(from);
-              return false;
-            }
-            addPiece(from);
-          }
-          if (inOpponentGoal(nextPlayer, to.getX(), to.getY()) || to.getColor() != EMPTY || (m.moveKind != Move.STEP && makesCluster(nextPlayer, to.getX(), to.getY()))) {
-	      return false;
-          }
-          return true;
+		if (m.moveKind == Move.QUIT) {
+			return true;
+		}
+		Piece to = this.getPiece(m.x1, m.y1);
+		if (to == null){
+			return false;
+		}
+		if ((m.moveKind == Move.STEP && numMoves < 20) || (m.moveKind == Move.ADD && numMoves >= 20)) {
+			return false;
+		}
+		if (m.moveKind == Move.STEP) {
+			Piece from = this.getPiece(m.x2, m.y2);
+			if (from.getColor() != nextPlayer) {
+				return false;
+			}
+			if (from.getX() == to.getX() && from.getY() == to.getY()) {
+				return false;
+			}
+			if ((!inBounds(from.getX(), from.getY()))) {
+				return false;
+			}
+			//The following code accounts for the fact that the result of a
+			//step move can't be seen without removing the from Piece.
+			removePiece(from);
+			if (makesCluster(nextPlayer, to.getX(), to.getY())) {
+				addPiece(from);
+				return false;
+			}
+			addPiece(from);
+		}
+		if (inOpponentGoal(nextPlayer, to.getX(), to.getY()) || to.getColor() != EMPTY || (m.moveKind != Move.STEP && makesCluster(nextPlayer, to.getX(), to.getY()))) {
+			return false;
+		}
+		return true;
 	}
 
-        /**
-         * Returns a list of all valid moves.
-         * First, makes a list of references to all Pieces of color == EMPTY not
-         * connected to two other same-colored pieces, then for each of those, adds to a list of
-         * Moves the "place" move to that Piece and any "step" moves to that
-         * piece.
-         *
-         *
-         * @param m, heldPieces
-         * @return array of valid moves.
-         */
-        protected DList validMoves() {
-          //The first block finds all of the pieces that can be moved to, and
-          //all that can be moved from.
-          DList empties = new DList();
-          DList froms = new DList();
-          boolean step = (numMoves >= 20);
-          for (int i = 0; i < getDimension(); i++) {
-            for (int j = 0; j < getDimension(); j++) {
+	/**
+	 * Returns a list of all valid moves.
+	 * First, makes a list of references to all Pieces of color == EMPTY not
+	 * connected to two other same-colored pieces, then for each of those, adds to a list of
+	 * Moves the "place" move to that Piece and any "step" moves to that
+	 * piece.
+	 *
+	 *
+	 * @param m, heldPieces
+	 * @return array of valid moves.
+	 */
+	protected DList validMoves() {
+		//The first block finds all of the pieces that can be moved to, and
+		//all that can be moved from.
+		DList empties = new DList();
+		DList froms = new DList();
+		boolean step = (numMoves >= 20);
+		for (int i = 0; i < getDimension(); i++) {
+			for (int j = 0; j < getDimension(); j++) {
 
-              if (!step && inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j)) && !(makesCluster(nextPlayer, i, j))) {
-		empties.insertBack(getPiece(i, j));
-	      }
-              if (step && inBounds(i,j) && getPiece(i,j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j))) {
-                empties.insertBack(getPiece(i,j));
-              }
-              if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {
-                    froms.insertBack(getPiece(i,j));
-              }
-	    }
-	  }
-
-          //Makes all valid combinations of froms and empties depending on the
-          //type of move needed and the moves' validity.
-          DList valids = new DList();
-          for (DListNode empty : empties) {
-            Piece emptyPiece;
-	    try {
-	      emptyPiece = ((Piece) empty.item());
+				if (!step && inBounds(i,j) && getPiece(i, j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j)) && !(makesCluster(nextPlayer, i, j))) {
+					empties.insertBack(getPiece(i, j));
+				}
+				if (step && inBounds(i,j) && getPiece(i,j).getColor() == EMPTY && !(inOpponentGoal(nextPlayer, i, j))) {
+					empties.insertBack(getPiece(i,j));
+				}
+				if (inBounds(i,j) && getPiece(i,j).getColor() == nextPlayer) {
+					froms.insertBack(getPiece(i,j));
+				}
+			}
 		}
-            catch (InvalidNodeException e) {
-              System.out.println("Caught an invalidNodeException in validMoves");
-	      emptyPiece = new Piece(-1, -1, EMPTY); //This ugly, but we've make sure item() never throws Exceptions so it seems okay.
-            }
-            int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
-            if (!step) {
-              valids.insertBack(new Move(emptyX, emptyY));
-            }
-            else {
-              Piece from;
-              for (DListNode dLN : froms) {
-                try {
-                  from = ((Piece) dLN.item());
-                }
-                catch (InvalidNodeException e) {
-                  System.out.println("InvalidNodeException in validMoves.");
-                  continue;
-                }
-                removePiece(from);
-                if (!makesCluster(nextPlayer, emptyX, emptyY)) {
-                  valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
-                }
-                addPiece(from);
-              }
-            }
-          }
-          return valids;
-        }
 
-    	/**
-    	 * Returns the identity of the winner, or EMPTY if there is none.
-    	 * This is an expensive operation; this should only be done once per Board.
-    	 *
-    	 * @return Which player has won
-    	 */
-    	protected int winner() {
-    		DList networks = findWinningNetworks(); //get the winning networks
-    		if (networks.length() == 0) { //if there aren't any, nobody has won
-    			return EMPTY;
-    		}
+		//Makes all valid combinations of froms and empties depending on the
+		//type of move needed and the moves' validity.
+		DList valids = new DList();
+		for (DListNode empty : empties) {
+			Piece emptyPiece;
+			try {
+				emptyPiece = ((Piece) empty.item());
+			}
+			catch (InvalidNodeException e) {
+				System.out.println("Caught an invalidNodeException in validMoves");
+				emptyPiece = new Piece(-1, -1, EMPTY); //This ugly, but we've make sure item() never throws Exceptions so it seems okay.
+			}
+			int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
+			if (!step) {
+				valids.insertBack(new Move(emptyX, emptyY));
+			}
+			else {
+				Piece from;
+				for (DListNode dLN : froms) {
+					try {
+						from = ((Piece) dLN.item());
+					}
+					catch (InvalidNodeException e) {
+						System.out.println("InvalidNodeException in validMoves.");
+						continue;
+					}
+					removePiece(from);
+					if (!makesCluster(nextPlayer, emptyX, emptyY)) {
+						valids.insertBack(new Move(emptyX, emptyY, from.getX(), from.getY()));
+					}
+					addPiece(from);
+				}
+			}
+		}
+		return valids;
+	}
 
-    		//find the color of the first network
-    		ListNode cur = networks.front();
-    		int winnerColor = EMPTY;
-    		try {
-    			Network n = (Network) cur.item();
-    			winnerColor = n.color();
-    			cur = cur.next();
-    		} catch (InvalidNodeException e) {
-    			assert false;
-    		}
+	/**
+	 * Returns the identity of the winner, or EMPTY if there is none.
+	 * This is an expensive operation; this should only be done once per Board.
+	 *
+	 * @return Which player has won
+	 */
+	protected int winner() {
+		DList networks = findWinningNetworks(); //get the winning networks
+		if (networks.length() == 0) { //if there aren't any, nobody has won
+			return EMPTY;
+		}
 
-    		assert winnerColor != EMPTY : "Winner is EMPTY and should not be EMPTY";
-    		//iterate through the networks
-    		while (cur.isValidNode()) {
-    			try {
-    				Network n = (Network) cur.item();
-    				if (n.color() != winnerColor) //that means that there's more than one color of winning network.
-    					return nextPlayer;
-    				cur = cur.next();
-    			} catch (InvalidNodeException e) {
-    				assert false;
-    			}
-    		}
-    		//if we've gotten here, that means all the networks are of one color.
-    		return winnerColor;
-    	}
+		//find the color of the first network
+		ListNode cur = networks.front();
+		int winnerColor = EMPTY;
+		try {
+			Network n = (Network) cur.item();
+			winnerColor = n.color();
+			cur = cur.next();
+		} catch (InvalidNodeException e) {
+			assert false;
+		}
 
-    	/*
-    	 * findWinningNetwork module begins here
-    	 */
+		assert winnerColor != EMPTY : "Winner is EMPTY and should not be EMPTY";
+		//iterate through the networks
+		while (cur.isValidNode()) {
+			try {
+				Network n = (Network) cur.item();
+				if (n.color() != winnerColor) //that means that there's more than one color of winning network.
+					return nextPlayer;
+				cur = cur.next();
+			} catch (InvalidNodeException e) {
+				assert false;
+			}
+		}
+		//if we've gotten here, that means all the networks are of one color.
+		return winnerColor;
+	}
 
-    	/**
-    	 * Finds a DList of Networks
-    	 * @return
-    	 */
-    	private DList findWinningNetworks() {
-    		boolean TRUNCATED = false; //if true, will only search for one network of each color
-    		DList networks = new DList();
-    		//checks for BLACK networks
-    		for (int i = 1; i < this.getDimension() - 1; i++) {
-    			Piece p = this.getPiece(0, i);
-    			if (p.getColor() != Piece.EMPTY) {
-    				Network n = findNetwork(p);
-    				if (n != null) {
-    					networks.insertBack(n);
-    					if (TRUNCATED)
-    						break;
-    				}
-    			}
-    		}
-    		//checks for WHITE networks
-    		for (int i = 1; i < this.getDimension() - 1; i++) {
-    			Piece q = this.getPiece(i, 0);
-    			if (q.getColor() != Piece.EMPTY) {
-    				Network n = findNetwork(q);
-    				if (n != null) {
-    					networks.insertBack(n);
-    					if (TRUNCATED)
-    						break;
-    				}
-    			}
-    		}
-    		return networks;
-    	}
+	/*
+	 * findWinningNetwork module begins here
+	 */
 
-    	/**
-    	 * Figures out if, from piece p, there exists a valid network. If so,
-    	 * returns that network, otherwise, returns null.
-    	 *
-    	 * @param p
-    	 * @return the network from p if it exists, null otherwise
-    	 */
-    	private Network findNetwork(Piece p) {
-    		Piece[] pieceArray = new Piece[1];
-    		pieceArray[0] = p;
-    		Piece[] pieces;
-    		try {
-    			pieces = findNetwork(pieceArray);
-    			if (pieces != null)
-    				return new Network(pieces);
-    			else
-    				return null;
-    		} catch (InvalidNodeException e) {
-    			e.printStackTrace();
-    			assert false;
-    		}
-    		return null;
-    	}
+	/**
+	 * Finds a DList of Networks
+	 * @return
+	 */
+	private DList findWinningNetworks() {
+		boolean TRUNCATED = false; //if true, will only search for one network of each color
+		DList networks = new DList();
+		//checks for BLACK networks
+		for (int i = 1; i < this.getDimension() - 1; i++) {
+			Piece p = this.getPiece(0, i);
+			if (p.getColor() != Piece.EMPTY) {
+				Network n = findNetwork(p);
+				if (n != null) {
+					networks.insertBack(n);
+					if (TRUNCATED)
+						break;
+				}
+			}
+		}
+		//checks for WHITE networks
+		for (int i = 1; i < this.getDimension() - 1; i++) {
+			Piece q = this.getPiece(i, 0);
+			if (q.getColor() != Piece.EMPTY) {
+				Network n = findNetwork(q);
+				if (n != null) {
+					networks.insertBack(n);
+					if (TRUNCATED)
+						break;
+				}
+			}
+		}
+		return networks;
+	}
 
-    	private Piece[] findNetwork(Piece[] prevPieces) throws InvalidNodeException {
-    		// find connections for the last Piece in prevPieces
-    		DList conns = this
-    				.findPieceConnections(prevPieces[prevPieces.length - 1]);
+	/**
+	 * Figures out if, from piece p, there exists a valid network. If so,
+	 * returns that network, otherwise, returns null.
+	 *
+	 * @param p
+	 * @return the network from p if it exists, null otherwise
+	 */
+	private Network findNetwork(Piece p) {
+		Piece[] pieceArray = new Piece[1];
+		pieceArray[0] = p;
+		Piece[] pieces;
+		try {
+			pieces = findNetwork(pieceArray);
+			if (pieces != null)
+				return new Network(pieces);
+			else
+				return null;
+		} catch (InvalidNodeException e) {
+			e.printStackTrace();
+			assert false;
+		}
+		return null;
+	}
 
-    		//iterate through conns
-    		for (DListNode node : conns) {
-    			Piece p = (Piece) node.item();
-    			//if prevPieces doesn't contain p, and p isn't in the path of prevPieces
-    			if (!containsPiece(prevPieces, p) && !inRayPath(prevPieces, p)) {
-    				if (isInEndZone(p)) {
-    					if (isInFarEndZoneIfAlreadyInEndZone(p)) {
-    						if (prevPieces.length >= 5) { //this one will make 6!
-    							return appendToPieceArray(prevPieces, p);
-    						}
-    					} else {// it's not in the far endzone, so it's in the near one
-    						continue;
-    					}
-    				} else { //not in end zone
-    					Piece[] attempt = findNetwork(appendToPieceArray(prevPieces, p));
-    					if (attempt != null)
-    						return attempt;
-    				}
-    			}
-    		}
-    		//if we haven't found any, return null
-    		return null;
-    	}
+	private Piece[] findNetwork(Piece[] prevPieces) throws InvalidNodeException {
+		// find connections for the last Piece in prevPieces
+		DList conns = this
+				.findPieceConnections(prevPieces[prevPieces.length - 1]);
 
-    	private boolean isInEndZone(Piece p) {
-    		int x = p.getX();
-    		int y = p.getY();
-    		int last = this.getDimension() - 1;
-    		return x == 0 || y == 0 || x >= last || y >= last;
-    	}
+		//iterate through conns
+		for (DListNode node : conns) {
+			Piece p = (Piece) node.item();
+			//if prevPieces doesn't contain p, and p isn't in the path of prevPieces
+			if (!containsPiece(prevPieces, p) && !inRayPath(prevPieces, p)) {
+				if (isInEndZone(p)) {
+					if (isInFarEndZoneIfAlreadyInEndZone(p)) {
+						if (prevPieces.length >= 5) { //this one will make 6!
+							return appendToPieceArray(prevPieces, p);
+						}
+					} else {// it's not in the far endzone, so it's in the near one
+						continue;
+					}
+				} else { //not in end zone
+					Piece[] attempt = findNetwork(appendToPieceArray(prevPieces, p));
+					if (attempt != null)
+						return attempt;
+				}
+			}
+		}
+		//if we haven't found any, return null
+		return null;
+	}
 
-    	private boolean isInFarEndZoneIfAlreadyInEndZone(Piece p) {
-    		return p.getX() != 0 && p.getY() != 0;
-    	}
+	private boolean isInEndZone(Piece p) {
+		int x = p.getX();
+		int y = p.getY();
+		int last = this.getDimension() - 1;
+		return x == 0 || y == 0 || x >= last || y >= last;
+	}
 
-    	private static boolean containsPiece(Piece[] pieces, Piece p) {
-    		assert pieces.length > 0;
-    		for (Piece i : pieces) {
-    			if (i.equals(p))
-    				return true;
-    		}
-    		return false;
-    	}
+	private boolean isInFarEndZoneIfAlreadyInEndZone(Piece p) {
+		return p.getX() != 0 && p.getY() != 0;
+	}
 
-    	private static Piece[] appendToPieceArray(Piece[] original, Piece p) {
-    		assert p != null;
-    		Piece[] ans = new Piece[original.length + 1];
-    		for (int i = 0; i < original.length; i++) {
-    			ans[i] = original[i];
-    		}
-    		ans[original.length] = p;
-    		return ans;
-    	}
+	private static boolean containsPiece(Piece[] pieces, Piece p) {
+		assert pieces.length > 0;
+		for (Piece i : pieces) {
+			if (i.equals(p))
+				return true;
+		}
+		return false;
+	}
 
-    	private static boolean inRayPath(Piece[] pieces, Piece p) {
-    		if (pieces.length < 2) // no ray!
-    			return false;
-    		int x1 = pieces[pieces.length - 2].getX();
-    		int y1 = pieces[pieces.length - 2].getY();
-    		int x2 = pieces[pieces.length - 1].getX();
-    		int y2 = pieces[pieces.length - 1].getY();
-    		int x3 = p.getX();
-    		int y3 = p.getY();
-    		return (x2 - x1) * (y3 - y2) == (x3 - x2) * (y2 - y1);
-    	}
+	private static Piece[] appendToPieceArray(Piece[] original, Piece p) {
+		assert p != null;
+		Piece[] ans = new Piece[original.length + 1];
+		for (int i = 0; i < original.length; i++) {
+			ans[i] = original[i];
+		}
+		ans[original.length] = p;
+		return ans;
+	}
 
-    	/**
-    	 * A wrapper class for a Network of Pieces;
-    	 *
-    	 * @author Allen Li
-    	 *
-    	 */
-    	private final class Network {
-    		private final Piece[] pieces;
-    		private final int color;
+	private static boolean inRayPath(Piece[] pieces, Piece p) {
+		if (pieces.length < 2) // no ray!
+			return false;
+		int x1 = pieces[pieces.length - 2].getX();
+		int y1 = pieces[pieces.length - 2].getY();
+		int x2 = pieces[pieces.length - 1].getX();
+		int y2 = pieces[pieces.length - 1].getY();
+		int x3 = p.getX();
+		int y3 = p.getY();
+		return (x2 - x1) * (y3 - y2) == (x3 - x2) * (y2 - y1);
+	}
 
-    		Network(Piece[] pieces) {
-    			assert pieces.length >= 6;
-    			this.pieces = pieces;
-    			this.color = pieces[0].getColor();
-    		}
+	/**
+	 * A wrapper class for a Network of Pieces;
+	 *
+	 * @author Allen Li
+	 *
+	 */
+	private final class Network {
+		private final Piece[] pieces;
+		private final int color;
 
-    		/**
-    		 * The color of this network
-    		 *
-    		 * @return color
-    		 */
-    		int color() {
-    			return this.color;
-    		}
+		Network(Piece[] pieces) {
+			assert pieces.length >= 6;
+			this.pieces = pieces;
+			this.color = pieces[0].getColor();
+		}
 
-    		/**
-    		 * The array containing the nodes in the network.
-    		 *
-    		 * @return a DList
-    		 */
-    		@SuppressWarnings("unused")
-    		Piece[] getPieces() {
-    			return pieces;
-    		}
+		/**
+		 * The color of this network
+		 *
+		 * @return color
+		 */
+		int color() {
+			return this.color;
+		}
+
+		/**
+		 * The array containing the nodes in the network.
+		 *
+		 * @return a DList
+		 */
+		@SuppressWarnings("unused")
+		Piece[] getPieces() {
+			return pieces;
+		}
 
 		public String toString() {
 			String colorString = "";
@@ -508,7 +508,7 @@ public class Board {
 			else if (color == EMPTY)
 				colorString = "EMPTY";
 			return "Network of length " + pieces.length + " and color "
-					+ colorString + " from " + pieces[0] + " to " + pieces[pieces.length - 1] + System.getProperty("line.separator");
+			+ colorString + " from " + pieces[0] + " to " + pieces[pieces.length - 1] + System.getProperty("line.separator");
 		}
 	}
 
@@ -520,36 +520,36 @@ public class Board {
 	 * Executes the Move m in the parameter if it is valid.
 	 *
 	 * @param m
-         * @return true if it does move, else false
+	 * @return true if it does move, else false
 	 */
 	public boolean doMove(Move m) {
-          if (m.moveKind == Move.QUIT) {
-            return true;
-          }
-          if (validMove(m)) {
-            if (m.moveKind == Move.STEP) {
-              removePiece(getPiece(m.x2,m.y2));
-            }
-            addPiece(new Piece(m.x1, m.y1, nextPlayer));
-            nextPlayer = otherPlayer(nextPlayer);
-            numMoves++;
-            return true;
-	  }
-          return false;
-        }
+		if (m.moveKind == Move.QUIT) {
+			return true;
+		}
+		if (validMove(m)) {
+			if (m.moveKind == Move.STEP) {
+				removePiece(getPiece(m.x2,m.y2));
+			}
+			addPiece(new Piece(m.x1, m.y1, nextPlayer));
+			nextPlayer = otherPlayer(nextPlayer);
+			numMoves++;
+			return true;
+		}
+		return false;
+	}
 
-        /**
-         * Undoes the Move m
-         *
+	/**
+	 * Undoes the Move m
+	 *
 	 * @param m
 	 */
-        protected void reverseMove(Move m) {
-          if (m.moveKind == Move.STEP) {
-            pieces[m.x2][m.y2] = new Piece(m.x2, m.y2, otherPlayer(nextPlayer));
-          }
-          pieces[m.x1][m.y1] = new Piece(m.x1, m.y1, EMPTY);
-          nextPlayer = otherPlayer(nextPlayer);
-          numMoves--;
+	protected void reverseMove(Move m) {
+		if (m.moveKind == Move.STEP) {
+			pieces[m.x2][m.y2] = new Piece(m.x2, m.y2, otherPlayer(nextPlayer));
+		}
+		pieces[m.x1][m.y1] = new Piece(m.x1, m.y1, EMPTY);
+		nextPlayer = otherPlayer(nextPlayer);
+		numMoves--;
 	}
 
 	/**
@@ -568,135 +568,135 @@ public class Board {
 		return numMoves;
 	}
 
-        /**
-         * Evaluates a board on a scale from -1 to 1: -1 meaning black has a winning
-         * network, 1 meaning white has a winning network. Numbers in between mean
-         * that either team has an advantage. The value is calculated by giving each
-         * side a certain amount of points for the different favorable conditions,
-         * then subtracting black's points from white's and dividing that difference
-         * b the total number of points. This will create an advantage range from -1
-         * to 1.
-         * Advantages are given by...
-         * having connections on the board
-         *  each connection values 2 points (simply from the nature of the
-         *  helper method findAllConnections counting each twice)
-         *
-         * To Be Expanded For Contest...
-         *
-         * @return this board's evaluation
-         */
-        public double boardEval() {
-          int whiteScore = 0;
-          int blackScore = 0;
+	/**
+	 * Evaluates a board on a scale from -1 to 1: -1 meaning black has a winning
+	 * network, 1 meaning white has a winning network. Numbers in between mean
+	 * that either team has an advantage. The value is calculated by giving each
+	 * side a certain amount of points for the different favorable conditions,
+	 * then subtracting black's points from white's and dividing that difference
+	 * b the total number of points. This will create an advantage range from -1
+	 * to 1.
+	 * Advantages are given by...
+	 * having connections on the board
+	 *  each connection values 2 points (simply from the nature of the
+	 *  helper method findAllConnections counting each twice)
+	 *
+	 * To Be Expanded For Contest...
+	 *
+	 * @return this board's evaluation
+	 */
+	public double boardEval() {
+		int whiteScore = 0;
+		int blackScore = 0;
 
-          int winner = this.winner();
-          if (winner == WHITE) {
-            return 1;
-          }
-          if (winner == BLACK) {
-            return -1;
-          }
+		int winner = this.winner();
+		if (winner == WHITE) {
+			return 1;
+		}
+		if (winner == BLACK) {
+			return -1;
+		}
 
-          int[] conn = findAllConnections();
-          whiteScore += conn[0];
-          blackScore += conn[1];
+		int[] conn = findAllConnections();
+		whiteScore += conn[0];
+		blackScore += conn[1];
 
-          if (whiteScore == 0 && blackScore == 0) {
-            return 0;
-          }
-          return .99 * ((double) (whiteScore - blackScore)) / ((double) (whiteScore + blackScore));
+		if (whiteScore == 0 && blackScore == 0) {
+			return 0;
+		}
+		return .99 * ((double) (whiteScore - blackScore)) / ((double) (whiteScore + blackScore));
 
-        }
+	}
 
-        /**
-         * Returns information about the connections (two pieces connected in
-         * an orthogonal or diagonal direction not blocked by an opponent's
-         * piece) currently on the board.
-         *
-         * @return [# white conections, # black connections]
-         */
-        protected int[] findAllConnections() {
-          //dictionary respresented by an array of DLists where keys (first entry) are the Piece, and entries are Pieces it's connected to
-          DList[] connDict = new DList[java.lang.Math.min(getNumMoves(), 20)];
-          int dictInd = 0;
-          for (int i = 0; i < getDimension(); i++) {
-            for (int j = 0; j < getDimension(); j++) {
-               if (inBounds(i, j) && getPiece(i, j).getColor() != EMPTY) {
-                 connDict[dictInd] = findPieceConnections(getPiece(i, j));
-                 connDict[dictInd].insertFront(getPiece(i,j));
-                 dictInd++;
-               }
-            }
-          }
-          int whiteTotal = 0, blackTotal = 0;
-          for (DList conn:connDict) {
-            try {
-              if (((Piece) conn.front().item()).getColor() == WHITE) {
-                whiteTotal += conn.length()-1;
-              }
-              else {
-                blackTotal += conn.length()-1;
-              }
-            }
-            catch (InvalidNodeException e) {
-              System.out.println("INException in findAllConnections. Shouldn't happen.");
-            }
-          }
-          int[] counts = {whiteTotal, blackTotal};
-          return counts;
-        }
+	/**
+	 * Returns information about the connections (two pieces connected in
+	 * an orthogonal or diagonal direction not blocked by an opponent's
+	 * piece) currently on the board.
+	 *
+	 * @return [# white conections, # black connections]
+	 */
+	protected int[] findAllConnections() {
+		//dictionary respresented by an array of DLists where keys (first entry) are the Piece, and entries are Pieces it's connected to
+		DList[] connDict = new DList[java.lang.Math.min(getNumMoves(), 20)];
+		int dictInd = 0;
+		for (int i = 0; i < getDimension(); i++) {
+			for (int j = 0; j < getDimension(); j++) {
+				if (inBounds(i, j) && getPiece(i, j).getColor() != EMPTY) {
+					connDict[dictInd] = findPieceConnections(getPiece(i, j));
+					connDict[dictInd].insertFront(getPiece(i,j));
+					dictInd++;
+				}
+			}
+		}
+		int whiteTotal = 0, blackTotal = 0;
+		for (DList conn:connDict) {
+			try {
+				if (((Piece) conn.front().item()).getColor() == WHITE) {
+					whiteTotal += conn.length()-1;
+				}
+				else {
+					blackTotal += conn.length()-1;
+				}
+			}
+			catch (InvalidNodeException e) {
+				System.out.println("INException in findAllConnections. Shouldn't happen.");
+			}
+		}
+		int[] counts = {whiteTotal, blackTotal};
+		return counts;
+	}
 
-        /**
-         * Returns a DList whose DListNodes contain the Pieces connected to
-         * Piece p.
-         *
-         * @param Piece p
-         * @return DList of Pieces
-         */
-        protected DList findPieceConnections(Piece p) {
-          DList connections = new DList();
-          //Checks for connections in all diagonal and orthogonal directions.
-          for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-              if (i != 0 || j != 0) {
-                Piece p2 = connInDirection(p, i, j);
-                if (p2 != null) {
-                  connections.insertBack(p2);
-                }
-              }
-            }
-          }
-          return connections;
-        }
+	/**
+	 * Returns a DList whose DListNodes contain the Pieces connected to
+	 * Piece p.
+	 *
+	 * @param Piece p
+	 * @return DList of Pieces
+	 */
+	protected DList findPieceConnections(Piece p) {
+		DList connections = new DList();
+		//Checks for connections in all diagonal and orthogonal directions.
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (i != 0 || j != 0) {
+					Piece p2 = connInDirection(p, i, j);
+					if (p2 != null) {
+						connections.insertBack(p2);
+					}
+				}
+			}
+		}
+		return connections;
+	}
 
-        /**
-         * Returns a connected piece in the direction determined by yDelt and
-         * xDelt. For example, if looking for a connected Piece in the up
-         * direction, do yDelt 1, xDelt 0.
-         *
-         * @param p
-         * @param yDelt
-         * @param xDelt
-         * @return connected Piece or null
-         */
+	/**
+	 * Returns a connected piece in the direction determined by yDelt and
+	 * xDelt. For example, if looking for a connected Piece in the up
+	 * direction, do yDelt 1, xDelt 0.
+	 *
+	 * @param p
+	 * @param yDelt
+	 * @param xDelt
+	 * @return connected Piece or null
+	 */
 
-        protected Piece connInDirection(Piece p, int xDelt, int yDelt) {
-          int x = p.getX() + xDelt, y = p.getY() + yDelt;
-          while (inBounds(x, y)) {
-            if (p.getColor() == getPiece(x, y).getColor()) {
-              return getPiece(x, y);
-            }
-            else if (getPiece(x, y).getColor() != EMPTY) {
-              return null;
-            }
-            x += xDelt;
-            y += yDelt;
-          }
-          return null;
-        }
+	protected Piece connInDirection(Piece p, int xDelt, int yDelt) {
+		int x = p.getX() + xDelt, y = p.getY() + yDelt;
+		while (inBounds(x, y)) {
+			if (p.getColor() == getPiece(x, y).getColor()) {
+				return getPiece(x, y);
+			}
+			else if (getPiece(x, y).getColor() != EMPTY) {
+				return null;
+			}
+			x += xDelt;
+			y += yDelt;
+		}
+		return null;
+	}
 
 
-        /**
+	/**
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
 	 * is already at that location. May throw ArrayIndexOutOfBounds exceptions if an invalid
 	 * location is specified.
@@ -713,17 +713,17 @@ public class Board {
 	}
 
 	/**
-         * Removes the Piece p from this Board. It will be used by reverse move
-         * and doMove.
-         *
-         * @param p
-         */
-        protected void removePiece(Piece p) {
-          if (p.getColor() == EMPTY) {
-            System.out.println("Can't remove an empty Piece");
-          }
-          pieces[p.getX()][p.getY()] = new Piece(p.getX(), p.getY(), EMPTY);
-        }
+	 * Removes the Piece p from this Board. It will be used by reverse move
+	 * and doMove.
+	 *
+	 * @param p
+	 */
+	protected void removePiece(Piece p) {
+		if (p.getColor() == EMPTY) {
+			System.out.println("Can't remove an empty Piece");
+		}
+		pieces[p.getX()][p.getY()] = new Piece(p.getX(), p.getY(), EMPTY);
+	}
 
 	/**
 	 * Adds the Piece p to this Board. Returns true if successful, false if another piece
@@ -738,7 +738,7 @@ public class Board {
 		return this.addPiece(new Piece(x, y, color));
 	}
 
-        /**
+	/**
 	 * Returns a String representation of a board.
 	 */
 	public String toString() {

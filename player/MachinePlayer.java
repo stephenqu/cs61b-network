@@ -31,7 +31,7 @@ public class MachinePlayer extends Player {
   * @param color is the color of this MachinePLayer
   **/
   public MachinePlayer(int color) {
-      this(color, 3);
+      this(color, 4);
       variableDepth = true;
   }
 
@@ -62,7 +62,7 @@ public class MachinePlayer extends Player {
   public Move chooseMove() {
       Move theChosen;
       if (variableDepth && (board.getNumMoves() > 20)){
-          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
+          theChosen = chooseMove(this.COLOR, -1, 1, maxDepth-2).bestMove;
       }else{
           theChosen = chooseMove(this.COLOR, -1, 1, maxDepth).bestMove;
       }
@@ -107,7 +107,7 @@ public class MachinePlayer extends Player {
       }
 
       if (side == this.COLOR){
-	  bestMove.score = 0.99*alpha; // a little bit less because we want boards that are the same score to be higher if it is fewer moves away
+	  bestMove.score = alpha;
       }else{
 	  bestMove.score = beta;
       }
@@ -115,6 +115,7 @@ public class MachinePlayer extends Player {
       for (DListNode m: moves){
 	  board.doMove( (Move) (m.item()) );
       	  bestReply = chooseMove(board.getNextPlayer(), alpha, beta, depth-1);
+          bestReply.score *= 0.99; // a little bit less because we want boards that are the same score to be higher if it is fewer moves away
 	  board.reverseMove( (Move) (m.item()) );
 	  if ( (side == this.COLOR) && (bestReply.score > bestMove.score)){
 	      bestMove.bestMove = (Move) m.item();

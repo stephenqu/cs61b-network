@@ -2,16 +2,16 @@ package player;
 
 /**
  * A class for representing a single position on a Board.
- * 
+ *
  * @author Allen W. Li
- * 
+ *
  */
 class Piece {
 
 	private int x;
 	private int y;
 	private int color;
-	
+
 	//These need to be FINAL!
 	public static final int BLACK = 0;
 	public static final int WHITE = 1;
@@ -19,7 +19,7 @@ class Piece {
 
 	/**
 	 * Creates a new Piece (for use with player.board).
-	 * 
+	 *
 	 * @param x
 	 *            the x-coordinate of the position (left to right, from 0)
 	 * @param y
@@ -33,34 +33,34 @@ class Piece {
 		this.color = color;
 	}
 
-	public int getX() {
+	protected int getX() {
 		return x;
 	}
 
-	public void setX(int x) {
+	protected void setX(int x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	protected int getY() {
 		return y;
 	}
 
-	public void setY(int y) {
+	protected void setY(int y) {
 		this.y = y;
 	}
 
-	public int getColor() {
+	protected int getColor() {
 		return color;
 	}
 
-	public void setColor(int color) {
+	protected void setColor(int color) {
 		this.color = color;
 	}
-	
+
 	public boolean equals(Piece p) {
 		return p.x == this.x && p.y == this.y && p.color == this.color;
 	}
-	
+
 	public String toString() {
 		String colorString = "";
 		if (color == BLACK)

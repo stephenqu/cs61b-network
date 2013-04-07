@@ -41,7 +41,7 @@ public class Board {
          *
          * @return this board's dimension
          */
-        public int getDimension() {
+        protected int getDimension() {
           return pieces.length;
         }
 
@@ -51,7 +51,7 @@ public class Board {
          * @param positions x and y
          * @return Piece at position x,y
          */
-        public Piece getPiece(int x, int y){
+        protected Piece getPiece(int x, int y){
           if (inBounds(x, y)) {
             return pieces[x][y];
           }
@@ -67,7 +67,7 @@ public class Board {
          * @return other color
          */
 
-        public int otherPlayer(int player) {
+        protected int otherPlayer(int player) {
           assert (player == WHITE || player == BLACK);
           if (player == WHITE) {
             return BLACK;
@@ -79,12 +79,12 @@ public class Board {
 
         /**
          * Returns an 8 element array of pieces representing the neighbors of
-         * the parameter piece, or null if a neighboring spot is out of bounds.
+         * the parameter piece. Out of bounds entries are null.
          *
          * @param Piece p
          * @return Piece[8] of surroundings
          */
-        public Piece[] getSurroundings(Piece p) {
+        protected Piece[] getSurroundings(Piece p) {
           Piece[] surround = new Piece[8];
           surround[0] = getPiece(p.getX() - 1, p.getY() - 1);
           surround[1] = getPiece(p.getX(), p.getY() - 1);
@@ -103,7 +103,7 @@ public class Board {
          * @param int color, int x, int y
          * @return Piece[8] of surroundings
          */
-        public Piece[] getSurroundings(int color, int x, int y) {
+        protected Piece[] getSurroundings(int color, int x, int y) {
           Piece p = new Piece(x, y, color);
           return getSurroundings(p);
         }
@@ -114,7 +114,7 @@ public class Board {
          * @param positions x and y
          * @return true if coordinates are within the board
          */
-        public boolean inBounds(int x, int y) {
+        protected boolean inBounds(int x, int y) {
 	    return (!(x < 0 || x >= this.getDimension() || y < 0 || y >= this.getDimension() || ((x == 0 || x == this.getDimension() - 1) && (y == 0 || y == this.getDimension() - 1))));
 	}
         /**
@@ -124,7 +124,7 @@ public class Board {
          * @param color, x, y
          * @return true if making pieces.[x][y] color creates a 'cluster'
          */
-        public boolean makesCluster(int color, int x, int y) {
+        protected boolean makesCluster(int color, int x, int y) {
           Piece p = new Piece(x, y, color);
     	  return makesCluster(p);
         }
@@ -136,7 +136,7 @@ public class Board {
          * @param piece
          * @return true if adding this piece creates a 'cluster'
          */
-	public boolean makesCluster(Piece p) {
+	protected boolean makesCluster(Piece p) {
 	    int inCluster = 0;
 	    for (Piece p1: getSurroundings(p)) {
                 if (p1 == null) {
@@ -151,7 +151,6 @@ public class Board {
 
 		for (Piece p2: getSurroundings(p1)) {
 		    if (p2 != null && !(p2.equals(p)) && p1.getColor() == p.getColor() && p2.getColor() == p.getColor()) {
-                        //System.out.println("got here when p is " + p + " and p1 is " + p1 + " and p2 is " + p2);
 			return true;
 		    }
 		}
@@ -166,7 +165,7 @@ public class Board {
          * @param color, x, y
          * @return true if a piece of this color at position x,y is in the opponent's goal
          */
-        public boolean inOpponentGoal(int color, int x, int y) {
+        protected boolean inOpponentGoal(int color, int x, int y) {
 	    return ((color == WHITE && (y == 0 || y == this.getDimension()-1)) || (color == BLACK && (x == 0 || x == this.getDimension()-1)));
         }
 
@@ -176,28 +175,30 @@ public class Board {
 	 * @param piece
 	 * @return true if piece will be in its opponent's goal
 	 */
-	public boolean inOpponentGoal(Piece piece){
+	protected boolean inOpponentGoal(Piece piece){
 	    return inOpponentGoal(piece.getColor(), piece.getX(), piece.getY());
 	}
 
 
 	/**
 	 * Decides if the Move m is a valid move on this board
-	 * TODO
+	 *
 	 * @param m
 	 * @return Whether the move is valid
 	 */
-	public boolean validMove(Move m) {
+	protected boolean validMove(Move m) {
           if (m.moveKind == Move.QUIT) {
             return true;
           }
 	  Piece to = this.getPiece(m.x1, m.y1);
+          if (to == null){
+              return false;
+          }
           if ((m.moveKind == Move.STEP && numMoves < 20) || (m.moveKind == Move.ADD && numMoves >= 20)) {
             return false;
           }
           if (m.moveKind == Move.STEP) {
             Piece from = this.getPiece(m.x2, m.y2);
-            //System.out.println(""+ (from.getColor() != nextPlayer) + "," + (from.getX() == to.getX() && from.getY() == to.getY()) + "," + ((!inBounds(from.getX(), from.getY()))));
             if (from.getColor() != nextPlayer) {
               return false;
             }
@@ -207,15 +208,16 @@ public class Board {
             if ((!inBounds(from.getX(), from.getY()))) {
               return false;
             }
+            //The following code accounts for the fact that the result of a
+            //step move can't be seen without removing the from Piece.
             removePiece(from);
-            //System.out.println(makesCluster(nextPlayer, to.getX(), to.getY()));
             if (makesCluster(nextPlayer, to.getX(), to.getY())) {
               addPiece(from);
               return false;
             }
             addPiece(from);
           }
-          if (!(inBounds(to.getX(), to.getY())) || inOpponentGoal(nextPlayer, to.getX(), to.getY()) || to.getColor() != EMPTY || (m.moveKind != Move.STEP && makesCluster(nextPlayer, to.getX(), to.getY()))) {
+          if (inOpponentGoal(nextPlayer, to.getX(), to.getY()) || to.getColor() != EMPTY || (m.moveKind != Move.STEP && makesCluster(nextPlayer, to.getX(), to.getY()))) {
 	      return false;
           }
           return true;
@@ -227,12 +229,14 @@ public class Board {
          * connected to two other same-colored pieces, then for each of those, adds to a list of
          * Moves the "place" move to that Piece and any "step" moves to that
          * piece.
-         * TODO
-         *g
+         *
+         *
          * @param m, heldPieces
          * @return array of valid moves.
          */
-        public DList validMoves() {
+        protected DList validMoves() {
+          //The first block finds all of the pieces that can be moved to, and
+          //all that can be moved from.
           DList empties = new DList();
           DList froms = new DList();
           boolean step = (numMoves >= 20);
@@ -251,16 +255,18 @@ public class Board {
 	    }
 	  }
 
+          //Makes all valid combinations of froms and empties depending on the
+          //type of move needed and the moves' validity.
           DList valids = new DList();
-          //System.out.println("empties is " + empties);
           for (DListNode empty : empties) {
-        	Piece emptyPiece = new Piece(-1, -1, EMPTY); //this janky method needs to get fixed.
-			try {
-				emptyPiece = ((Piece) empty.item());
-			} catch (InvalidNodeException e) {
-				e.printStackTrace();
-				assert false;
-			}
+            Piece emptyPiece;
+	    try {
+	      emptyPiece = ((Piece) empty.item());
+		}
+            catch (InvalidNodeException e) {
+              System.out.println("Caught an invalidNodeException in validMoves");
+	      emptyPiece = new Piece(-1, -1, EMPTY); //This ugly, but we've make sure item() never throws Exceptions so it seems okay.
+            }
             int emptyX = emptyPiece.getX(), emptyY = emptyPiece.getY();
             if (!step) {
               valids.insertBack(new Move(emptyX, emptyY));
@@ -272,8 +278,8 @@ public class Board {
                   from = ((Piece) dLN.item());
                 }
                 catch (InvalidNodeException e) {
-                  System.out.println("INException in validMoves.");
-                  from = new Piece(-1, -1, EMPTY);
+                  System.out.println("InvalidNodeException in validMoves.");
+                  continue;
                 }
                 removePiece(from);
                 if (!makesCluster(nextPlayer, emptyX, emptyY)) {
@@ -289,10 +295,10 @@ public class Board {
     	/**
     	 * Returns the identity of the winner, or EMPTY if there is none.
     	 * This is an expensive operation; this should only be done once per Board.
-    	 * TODO
+    	 *
     	 * @return Which player has won
     	 */
-    	public int winner() {
+    	protected int winner() {
     		DList networks = findWinningNetworks(); //get the winning networks
     		if (networks.length() == 0) { //if there aren't any, nobody has won
     			return EMPTY;
@@ -504,7 +510,10 @@ public class Board {
 	 * @param m
          * @return true if it does move, else false
 	 */
-	public boolean doMove(Move m) {
+	protected boolean doMove(Move m) {
+          if (m.moveKind == Move.QUIT) {
+            return true;
+          }
           if (validMove(m)) {
             if (m.moveKind == Move.STEP) {
               removePiece(getPiece(m.x2,m.y2));
@@ -514,7 +523,6 @@ public class Board {
             numMoves++;
             return true;
 	  }
-          System.out.println("tried to do move " + m + " but failed.");
           return false;
         }
 
@@ -523,7 +531,7 @@ public class Board {
          *
 	 * @param m
 	 */
-        public void reverseMove(Move m) {
+        protected void reverseMove(Move m) {
           if (m.moveKind == Move.STEP) {
             pieces[m.x2][m.y2] = new Piece(m.x2, m.y2, otherPlayer(nextPlayer));
           }
@@ -536,7 +544,7 @@ public class Board {
 	 * Returns the player's color who will perform the next move.
 	 * @return the player's color
 	 */
-	public int getNextPlayer() {
+	protected int getNextPlayer() {
 		return nextPlayer;
 	}
 
@@ -544,7 +552,7 @@ public class Board {
 	 * Returns the number of moves that have occurred so far in the game.
 	 * @return the number of moves
 	 */
-	public int getNumMoves() {
+	protected int getNumMoves() {
 		return numMoves;
 	}
 
@@ -557,12 +565,15 @@ public class Board {
          * b the total number of points. This will create an advantage range from -1
          * to 1.
          * Advantages are given by...
-         * having series of connections on the board
-         *  a series values 2^(n+m) for n connected Pieces with m in goals
+         * having connections on the board
+         *  each connection values 2 points (simply from the nature of the
+         *  helper method findAllConnections counting each twice)
+         *
+         * To Be Expanded For Contest...
          *
          * @return this board's evaluation
          */
-        public double boardEval() {
+        protected double boardEval() {
           int whiteScore = 0;
           int blackScore = 0;
 
@@ -592,8 +603,9 @@ public class Board {
          *
          * @return [# white conections, # black connections]
          */
-        public int[] findAllConnections() {
-          DList[] connDict = new DList[java.lang.Math.min(getNumMoves(), 20)]; //dictionary where keys (first entry) are the Piece, and entries are Pieces it's connected to
+        protected int[] findAllConnections() {
+          //dictionary respresented by an array of DLists where keys (first entry) are the Piece, and entries are Pieces it's connected to
+          DList[] connDict = new DList[java.lang.Math.min(getNumMoves(), 20)];
           int dictInd = 0;
           for (int i = 0; i < getDimension(); i++) {
             for (int j = 0; j < getDimension(); j++) {
@@ -607,14 +619,16 @@ public class Board {
           int whiteTotal = 0, blackTotal = 0;
           for (DList conn:connDict) {
             try {
-            if (((Piece) conn.front().item()).getColor() == WHITE) {
-              whiteTotal += conn.length()-1;
+              if (((Piece) conn.front().item()).getColor() == WHITE) {
+                whiteTotal += conn.length()-1;
+              }
+              else {
+                blackTotal += conn.length()-1;
+              }
             }
-            else {
-              blackTotal += conn.length()-1;
+            catch (InvalidNodeException e) {
+              System.out.println("INException in findAllConnections. Shouldn't happen.");
             }
-            }
-            catch (InvalidNodeException e) {System.out.println("INException in findAllConnections. Shouldn't happen.");}
           }
           int[] counts = {whiteTotal, blackTotal};
           return counts;
@@ -627,9 +641,10 @@ public class Board {
          * @param Piece p
          * @return DList of Pieces
          */
-        public DList findPieceConnections(Piece p) {
+        protected DList findPieceConnections(Piece p) {
           int x = p.getX(), y = p.getY();
           DList connections = new DList();
+          //Checks for connections in all diagonal and orthogonal directions.
           for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
               if (i != 0 || j != 0) {
@@ -654,7 +669,7 @@ public class Board {
          * @return connected Piece or null
          */
 
-        public Piece connInDirection(Piece p, int xDelt, int yDelt) {
+        protected Piece connInDirection(Piece p, int xDelt, int yDelt) {
           int x = p.getX() + xDelt, y = p.getY() + yDelt;
           while (inBounds(x, y)) {
             if (p.getColor() == getPiece(x, y).getColor()) {
@@ -677,7 +692,7 @@ public class Board {
 	 * @param p the piece
 	 * @return whether we were successful in adding the piece
 	 */
-	public boolean addPiece(Piece p) {
+	protected boolean addPiece(Piece p) {
 		Piece prev = pieces[p.getX()][p.getY()];
 		if (prev.getColor() != Piece.EMPTY) {
 			return false;
@@ -692,7 +707,7 @@ public class Board {
          *
          * @param p
          */
-        public void removePiece(Piece p) {
+        protected void removePiece(Piece p) {
           if (p.getColor() == EMPTY) {
             System.out.println("Can't remove an empty Piece");
           }
@@ -708,7 +723,7 @@ public class Board {
 	 * @param color the Color of the piece
 	 * @return
 	 */
-	public boolean addPiece(int x, int y, int color) {
+	protected boolean addPiece(int x, int y, int color) {
 		return this.addPiece(new Piece(x, y, color));
 	}
 
@@ -746,19 +761,5 @@ public class Board {
 			ans += eol + boardBreak + eol;
 		}
 		return ans;
-	}
-
-	/**
-	 * Asserts that our invariants are true. Throws exceptions otherwise.
-	 * @return always returns true
-	 */
-	@SuppressWarnings("unused")
-	private boolean testInvariants() {
-		assert true;
-		return true;
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Hello World");
 	}
 }
